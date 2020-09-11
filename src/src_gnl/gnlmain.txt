@@ -1,0 +1,571 @@
+#include "gnl/get_next_line.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include "../../libft/libft.h"
+
+typedef struct	s_game
+{
+	int			iScreenWidth;
+	int			iScreenHeight;
+	int			col_floor;
+	int			col_ceiling;
+}				t_game;
+
+typedef struct	s_check
+{
+	int		found_r;
+	int		found_no;
+	int		found_so;
+	int		found_we;
+	int		found_ea;
+	int		found_s;
+	char	*path_no;
+	char	*path_so;
+	char	*path_we;
+	char	*path_ea;
+	char	*path_s;
+	int		found_f;
+	int		found_c;
+	int		map_lines; // number of map lines with extra lines in the end
+	int		count_lines; // lines before map;
+}				t_check;
+
+void ft_init_structs(t_check *checks, t_game *game)
+{
+	game->iScreenWidth = 0;
+	game->iScreenHeight = 0;
+	game->col_ceiling = 0;
+	game->col_floor = 0;
+	checks->found_no = 0;
+	checks->found_so = 0;
+	checks->found_we = 0;
+	checks->found_ea = 0;
+	checks->found_s = 0;
+	checks->path_no = 0;
+	checks->path_so = 0;
+	checks->path_we = 0;
+	checks->path_ea = 0;
+	checks->path_s = 0;
+	checks->found_f = 0;
+	checks->found_c = 0;
+	checks->map_lines = 0;
+	checks->count_lines = 0;
+}
+
+size_t	ft_strlcpy_set_ch(char *dst, const char *src, size_t size, char x)
+{
+	size_t	i;
+	size_t	size2;
+
+	size2 = size;
+	i = 0;
+	if (size == 0)
+		return (ft_strlen(src));
+	if (!src[i])
+		dst[i] = '\0';
+	while ((src[i] != '\0') && (size2 > 0))
+	{
+		dst[i] = src[i];
+		i++;
+		dst[i] = x;
+		size2--;
+	}
+	while (size2 > 0)
+	{
+		dst[i] = x;
+		i++;
+		size2--;
+	}
+	dst[i] = '\0';
+	return (ft_strlen(src));
+}
+
+
+void ft_skip_spaces(char *line, int *i)
+{
+	while (line[*i] == ' ' || line[*i] == '\n' || line[*i] == '\f' ||
+	line[*i] == '\r' || line[*i] == '\t' || line[*i] == '\v')
+		*i += 1;
+}
+
+void ft_skip_spaces_n_comma(char *line, int *i)
+{
+	while (line[*i] == ' ' || line[*i] == '\n' || line[*i] == '\f' ||
+	line[*i] == '\r' || line[*i] == '\t' || line[*i] == '\v')
+		*i = *i + 1;
+	if (line[*i] == ',')
+		*i = *i + 1;
+	while (line[*i] == ' ' || line[*i] == '\n' || line[*i] == '\f' ||
+	line[*i] == '\r' || line[*i] == '\t' || line[*i] == '\v')
+		*i = *i + 1;
+}
+
+int ft_search_r(t_check *checks, t_game *game, char *line)
+{
+	int i;
+
+	i = 0;
+	ft_skip_spaces(line, &i);
+	i++;
+	ft_skip_spaces(line, &i);
+	if (line[i] >= '0' && line[i] <= '9')
+			game->iScreenWidth = atoi(&line[i]);
+	else
+		return (-1);
+	i += ft_nbrlen(game->iScreenWidth, 10);
+	ft_skip_spaces(line, &i);
+	if (line[i] >= '0' && line[i] <= '9')
+		game->iScreenHeight = atoi(&line[i]);
+	else
+		return (-1);
+	checks->found_r = 1;
+	printf("%d\n", game->iScreenWidth);
+	printf("%d\n", game->iScreenHeight);
+	return (0);
+}
+
+int ft_search_no(t_check *checks, char *line)
+{
+	int i;
+
+	i = 0;
+	ft_skip_spaces(line, &i);
+	i = i + 2;
+	ft_skip_spaces(line, &i);
+	if (line[i] == '.')
+		checks->path_no = ft_strdup(&line[i]);
+
+	else
+		return (-1);
+	printf("%s|\n", checks->path_no);
+	checks->found_no = 1;
+	return (0);
+}
+
+int ft_search_so(t_check *checks, char *line)
+{
+	int i;
+
+	i = 0;
+	ft_skip_spaces(line, &i);
+	i = i + 2;
+	ft_skip_spaces(line, &i);
+	if (line[i] == '.')
+		checks->path_so = ft_strdup(&line[i]);
+	else
+		return (-1);
+	printf("%s|\n", checks->path_so);
+	checks->found_so = 1;
+	return (0);
+}
+
+int ft_search_we(t_check *checks, char *line)
+{
+	int i;
+
+	i = 0;
+	ft_skip_spaces(line, &i);
+	i = i + 2;
+	ft_skip_spaces(line, &i);
+	if (line[i] == '.')
+		checks->path_we = ft_strdup(&line[i]);
+	else
+		return (-1);
+	printf("%s|\n", checks->path_we);
+	checks->found_we = 1;
+	return (0);
+}
+
+int ft_search_ea(t_check *checks, char *line)
+{
+	int i;
+
+	i = 0;
+	ft_skip_spaces(line, &i);
+	i = i + 2;
+	ft_skip_spaces(line, &i);
+	if (line[i] == '.')
+		checks->path_ea = ft_strdup(&line[i]);
+	else
+		return (-1);
+	printf("%s|\n", checks->path_ea);
+	checks->found_ea = 1;
+	return (0);
+}
+
+int ft_search_s(t_check *checks, char *line)
+{
+	int i;
+
+	i = 0;
+	ft_skip_spaces(line, &i);
+	i++;
+	ft_skip_spaces(line, &i);
+	if (line[i] == '.')
+		checks->path_s = ft_strdup(&line[i]);
+	else
+		return (-1);
+	checks->found_s = 1;
+	printf("%s|\n", checks->path_s);
+	return (0);
+}
+
+int ft_search_f(t_check *checks, t_game *game, char *line)
+{
+	int i;
+	int oct1;
+	int oct2;
+	int oct3;
+
+	oct1 = 0;
+	oct2 = 0;
+	oct3 = 0;
+	i = 0;
+	ft_skip_spaces(line, &i);
+	i++;
+	ft_skip_spaces(line, &i);
+	if (line[i] >= '0' && line[i] <= '9')
+		oct1 = atoi(&line[i]);
+	else
+		return (-1);
+	if (oct1 < 0 || oct1 > 255)
+		return (-1);
+	i = i + ft_nbrlen(oct1, 10);
+	ft_skip_spaces_n_comma(line, &i);
+	if (line[i] >= '0' && line[i] <= '9')
+		oct2 = atoi(&line[i]);
+	else
+		return (-1);
+	if (oct2 < 0 || oct2 > 255)
+		return (-1);
+	i = i + ft_nbrlen(oct2, 10);
+	ft_skip_spaces_n_comma(line, &i);
+	if (line[i] >= '0' && line[i] <= '9')
+		oct3 = atoi(&line[i]);
+	else
+		return (-1);
+	if (oct3 < 0 || oct3 > 255)
+		return (-1);
+	i = i + ft_nbrlen(oct3, 10);
+	ft_skip_spaces(line, &i);
+	if (line[i] != '\0')
+		return (-1);
+	game->col_floor = oct1 * 0x10000 + oct2 * 0x100 + oct3;
+	printf("%d|\n", game->col_floor);
+	checks->found_f = 1;
+	return (0);
+}
+
+int ft_search_c(t_check *checks, t_game *game, char *line)
+{
+	int i;
+	int oct1;
+	int oct2;
+	int oct3;
+
+	oct1 = 0;
+	oct2 = 0;
+	oct3 = 0;
+	i = 0;
+	ft_skip_spaces(line, &i);
+	i++;
+	ft_skip_spaces(line, &i);
+	if (line[i] >= '0' && line[i] <= '9')
+		oct1 = atoi(&line[i]);
+	else
+		return (-1);
+	if (oct1 < 0 || oct1 > 255)
+		return (-1);
+	i = i + ft_nbrlen(oct1, 10);
+	ft_skip_spaces_n_comma(line, &i);
+	if (line[i] >= '0' && line[i] <= '9')
+		oct2 = atoi(&line[i]);
+	else
+		return (-1);
+	if (oct2 < 0 || oct2 > 255)
+		return (-1);
+	i = i + ft_nbrlen(oct2, 10);
+	ft_skip_spaces_n_comma(line, &i);
+	if (line[i] >= '0' && line[i] <= '9')
+		oct3 = atoi(&line[i]);
+	else
+		return (-1);
+	if (oct3 < 0 || oct3 > 255)
+		return (-1);
+	i = i + ft_nbrlen(oct3, 10);
+	ft_skip_spaces(line, &i);
+	if (line[i] != '\0')
+		return (-1);
+	game->col_ceiling = oct1 * 0x10000 + oct2 * 0x100 + oct3;
+	printf("%d|\n", game->col_floor);
+	checks->found_c = 1;
+	return (0);
+}
+
+int ft_longest_mapline(t_check *checks)
+{
+	char **map;
+	char *the_line;
+	char *line;
+	int fd;
+	int i;
+
+	map = malloc(sizeof(char*) * checks->map_lines + 1);
+	i = 0;
+	fd = open("map.cub", O_RDONLY);
+	while (i < checks->count_lines - 1)
+	{
+		get_next_line(fd, &line);
+		i++;
+	}
+	i = 0;
+	while (i < checks->map_lines)
+	{
+		get_next_line(fd, &line);
+		map[i] = ft_strdup(line);
+		if (i == 0)
+			the_line = map[i];
+		if (ft_strlen(map[i]) > ft_strlen(the_line))
+			the_line = ft_strdup(line);
+		i++;
+	}
+	close(fd);
+	return (ft_strlen(the_line));
+}
+
+int ft_map_borders(char **map, t_check *checks)
+{
+	int x;
+	int y;
+	char *line1; //previous line
+	char *line2;//line under check
+	char *line3;//next line
+
+	x = 1;
+	while (x < (checks->map_lines - 1))
+	{
+		y = 1;
+		line1 = ft_strdup(map[x-1]);
+		line2 = ft_strdup(map[x]);
+		line3 = ft_strdup(map[x+1]);
+		while (map[x][y] != '\0')
+			{
+				if (line2[y] == '0')
+					if (line1[y] == ' ' || line1[y-1] == ' '|| line1[y+1] == ' ' ||
+					line3[y] == ' ' || line3[y-1] == ' '|| line3[y+1] == ' ' ||
+					line2[y-1] == ' ' || line2[y+1] == ' '|| y == -1)
+					{
+						printf("\n\nabsent boarders\n");
+						return (-1);
+					}
+				y++;
+			}
+		ft_strchr(map[x], 0);
+		x++;
+		printf("last line|%s|\n", line1);
+		printf("THE  line|%s|\n", line2);
+		printf("next line|%s|\n", line3);
+	}
+//check all neaded elements
+//look for garbage
+//check spaces near 0
+
+	return (0);
+}
+
+int ft_forbid_symbols(char **map)
+{
+	int x;
+	int y;
+
+	x = 0;
+	while (map[x])
+	{
+		y = 0;
+		while (map[x][y])
+		{
+			y++;
+			if (map[x][y] != '2' && map[x][y] != '0' && map[x][y] != '1' && map[x][y] != 'N' &&
+			map[x][y] != 'S' && map[x][y] != 'W' && map[x][y] != 'E' && map[x][y] != ' '
+			&& map[x][y] != '\0')
+			{
+				printf ("wrong symbols inside the map\n");
+				return (-1);
+			}
+		}
+		x++;
+	}
+	return (0);
+}
+
+int ft_map_w_spaces(int line_len, t_check *checks)
+{
+	char **map;
+	char *line;
+	int fd;
+	int i;
+
+	map = malloc(sizeof(char*) * checks->map_lines + 1);
+	i = 0;
+	fd = open("map.cub", O_RDONLY);
+	while (i < checks->count_lines - 1)
+	{
+		get_next_line(fd, &line);
+		i++;
+	}
+	i = 0;
+	while (i < checks->map_lines)
+	{
+		get_next_line(fd, &line);
+		map[i] = malloc(sizeof(char*) * line_len + 1);
+		ft_strlcpy_set_ch(map[i], line, line_len, ' ');
+		printf ("map |%s|\n", map[i]);
+		i++;
+	}
+	close(fd);
+	ft_forbid_symbols(map);
+	ft_map_borders(map, checks);
+	return (0);
+}
+
+int ft_map(char *line, t_check *checks)
+{
+	char **map;
+	int fd;
+	int i;
+
+	if (checks->map_lines == 0)
+		return (1);
+	map = malloc(sizeof(char*) * checks->map_lines + 1);
+	i = 0;
+	fd = open("map.cub", O_RDONLY);
+	while (i < checks->count_lines - 1)
+	{
+		get_next_line(fd, &line);
+		i++;
+	}
+	i = 0;
+	while (i < checks->map_lines)
+	{
+		get_next_line(fd, &line);
+		map[i] = ft_strdup(line);
+		printf ("%s\n", line);
+		i++;
+	}
+	close(fd);
+	return (0);
+}
+
+int ft_check_if_all_found(t_check *cheks)
+{
+	if (cheks->found_r != 1 || cheks->found_no != 1 || cheks->found_so != 1 ||
+	cheks->found_we != 1 || cheks->found_ea != 1|| cheks->found_s != 1 ||
+	cheks->found_f != 1 || cheks->found_c != 1)
+		return (-1);
+	else
+		return (0);
+}
+
+
+int ft_search_map(t_check *checks)
+{
+	int i;
+	int q;
+	int fd;
+	char *line;
+
+	if (ft_check_if_all_found(checks) == -1)
+	{
+		printf("not enough args\n");
+		return (-1);
+	}
+	i = 0;
+	fd = open("map.cub", O_RDONLY);
+	while (i < checks->count_lines - 1)
+	{
+		get_next_line(fd, &line);
+		i++;
+	}
+	while (get_next_line(fd, &line) > 0)
+	{
+		i = 0;
+		ft_skip_spaces(line, &i);
+		while (line[i] == ' ' || line[i] == '1')
+		{
+			if (line[i] == '1')
+			{
+				checks->map_lines++;
+				break;
+			}
+			i++;
+		}
+		if (line[i] != '1' && line[i] != '\0')
+		{
+			printf("garbage in the end\n");
+			return (-1);
+		}
+	}
+	printf("\n\nmap_lines = %d\ncount_lines = %d\n", checks->map_lines, checks->count_lines);
+	close(fd);
+	q = ft_longest_mapline(checks);
+	ft_map_w_spaces(q, checks);
+	ft_map(line, checks);
+	return (0);
+}
+
+int ft_what_type(t_check *checks, t_game *game)
+{
+	int i;
+	int fd;
+	char *line;
+
+	fd = open("map.cub", O_RDONLY);
+	while (get_next_line(fd, &line) > 0)
+	{
+		i = 0;
+		checks->count_lines++;
+		ft_skip_spaces(line, &i);
+		if (line[i] == 'R')
+			ft_search_r (checks, game, line);
+		else if (line[i] == 'N' && line[i + 1] == 'O' && checks->found_no != 1)
+			ft_search_no (checks, line);
+		else if (line[i] == 'W' && line[i + 1] == 'E' && checks->found_we != 1)
+			ft_search_we (checks, line);
+		else if (line[i] == 'E' && line[i + 1] == 'A' && checks->found_ea != 1)
+			ft_search_ea (checks, line);
+		else if (line[i] == 'S' && line[i + 1] == 'O' && checks->found_ea != 1)
+			ft_search_so (checks, line);
+		else if (line[i] == 'S' && checks->found_s != 1)
+			ft_search_s (checks, line);
+		else if (line[i] == 'F' && checks->found_f != 1)
+			ft_search_f (checks, game, line);
+		else if (line[i] == 'C' && checks->found_c != 1)
+			ft_search_c (checks, game, line);
+		else if (line[i] == '\0')
+			continue;
+		else if (line[i] == '1')
+		{
+			printf("|go to map|\n");
+			break;
+		}
+		else if (line[i] <= '~' && line[i] >= '!')
+		{
+			printf("|-1|\n");
+			return (-1);
+		}
+	}
+	close(fd);
+	ft_search_map (checks);
+	return (0);
+}
+
+int main()
+{
+	t_check checks;
+	t_game game;
+	ft_init_structs(&checks, &game);
+	ft_what_type(&checks, &game);
+	return (0);
+}
