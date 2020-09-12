@@ -57,20 +57,30 @@ void	ft_key_move(void)
 			g_plr.fplr_x -= sinf(g_plr.fplr_a) * g_plr.fplr_v * 2;
 		}
 	}
-/*
-	pid = fork();
-	if (pid == 0)
-	{
-		system("mpg123 -q -f 4000 sound/step4.mp3");
-		exit(0);
-	}
-*/
+
+if (g_game.isteps == 0)
+{
+	g_game.isteps = 1;
+	g_game.ccmd = ft_strdup("");
+	ft_strjoin_f("bash unmute_pid.sh ", g_game.cm_steps, &g_game.ccmd);
+	printf ("%s\n", g_game.ccmd);
+	system(g_game.ccmd);
+}
+
 }
 
 void	ft_key_actions(void)
 {
 	if ((g_plr.uikeys_prsd & PRSD_DOWN_S) != 0 || (g_plr.uikeys_prsd & PRSD_UP_W) != 0 || (g_plr.uikeys_prsd & PRSD_D) != 0 || (g_plr.uikeys_prsd & PRSD_A) != 0)
 		ft_key_move();
+	else if (g_game.isteps == 1)
+	{
+		g_game.isteps = 0;
+		g_game.ccmd = ft_strdup("");
+		ft_strjoin_f("bash mute_pid.sh ", g_game.cm_steps, &g_game.ccmd);
+		printf ("%s\n", g_game.ccmd);
+		system(g_game.ccmd);
+	}
 
 	if ((g_plr.uikeys_prsd & PRSD_LEFT) != 0)
 	{
@@ -94,7 +104,7 @@ void	ft_key_actions(void)
 	if ((g_plr.uikeys_prsd & PRSD_E) != 0)
 		ft_key_e();
 	if ((g_plr.uikeys_prsd & PRSD_SHIFT) != 0)
-		g_plr.fplr_v = 0.16f;
+		g_plr.fplr_v = 0.10f;
 	else if ((g_plr.uikeys_prsd & PRSD_SHIFT) == 0)
 		g_plr.fplr_v = 0.04f;
 

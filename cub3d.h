@@ -104,6 +104,10 @@ typedef struct			s_game
 	void				*win;
 	Display				*dpy;
 	Window				root_window;
+	char				*cm_steps;
+	char				*cm_music;
+	char				*ccmd;
+	int					isteps;
 }						t_game;
 
 typedef struct			s_player

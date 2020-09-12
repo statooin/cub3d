@@ -13,6 +13,34 @@
 #include "cub3d.h"
 #include "src/src_gnl/read_cub.h"
 
+#include<string.h>
+
+
+void	ft_pidof_last_mpg123(char **pid)
+{
+        char pidline[1024];
+        //char *pid;
+        //int i = 0;
+        //int pidno[64];
+        FILE *fp = popen("pidof mpg123","r");
+        fgets(pidline,1024,fp);
+
+        printf("%s",pidline);
+        //pid = strtok (pidline," ");
+	*pid = ft_strdup(strtok (pidline," "));
+/*        while(pid != NULL)
+	{
+		pidno[i] = atoi(pid);
+		g_game.cm_steps = ft_strdup(pid);
+		printf("%d\n",pidno[i]);
+		pid = strtok (NULL , " ");
+		i++;
+	}
+*/
+	printf("%s\n\n", g_game.cm_steps);
+	pclose(fp);
+}
+
 void	ft_init_walls(void)
 {
 	g_tex.tex_wall = malloc(sizeof(t_img_n_tex) * 10);
@@ -74,11 +102,41 @@ void	ft_init_walls(void)
 	g_tex.tex_wall[4].iprior = 8;
 }
 
+
+
 int	main(void)
 {
 	int	i_load_x;
+	int	pid;
+	//char	*g_game.ccmd;
 
 	ft_cub_validation();
+
+	printf("----------------------\n\n");
+///////////////////////////////////////////////////
+	pid = fork();
+	if (pid == 0)
+	{
+		system("mpg123 -f 2000 -q --loop -1 sound/step4.mp3 mpg");
+		exit(0);
+	}
+	printf("loaded steps\n\n");
+///////////////////////////////////////////////
+ft_pause(1100);
+///////////////////////////////////////////////
+
+	system("pacmd list-sink-inputs | grep index");
+
+	ft_pidof_last_mpg123(&g_game.cm_steps);
+	printf ("%s\n", g_game.cm_steps);
+	//g_game.cm_steps = ft_strdup("bash mute_pid.sh ");
+	g_game.ccmd = ft_strdup("");
+	ft_strjoin_f("bash mute_pid.sh ", g_game.cm_steps, &g_game.ccmd);
+	printf ("%s\n", g_game.ccmd);
+	system(g_game.ccmd);
+	printf("muted steps\n");
+/////////////////////////////////////////////////////
+	printf("----------------------\n\n");
 
 
 	//g_game.iscr_width = ; //1280 1024	1280	1366	1600	1920;
@@ -110,15 +168,6 @@ int	main(void)
 	g_game.win_buf.bpp_8 = g_game.win_buf.bpp / 8;
 
 
-	int	pid;
-	pid = fork();
-	if (pid == 0)
-	{
-		system("mpg123 -q -f 25000 sound/double_star.mp3");
-		exit(0);
-	}
-	pid += 2;
-	printf ("pid = %d\n", pid);
 
 	//ui loading
 	g_tex.tex_ui_01.ptr = mlx_xpm_file_to_image(g_game.mlx, "textures/ui/loading.xpm", &g_tex.tex_ui_01.width, &g_tex.tex_ui_01.height);
@@ -129,6 +178,28 @@ int	main(void)
 	ft_put_scaled_img_lt_to_win(&g_game.win_buf, &g_game, &g_tex.tex_ui_01, 30, g_game.iscr_height - 30); //del this
 	mlx_put_image_to_window(g_game.mlx, g_game.mlx_win, g_game.win_buf.ptr, 0, 0);
 
+
+
+///////////////////////////////////////////
+	pid = fork();
+	if (pid == 0)
+	{
+		system("mpg123 -q -f 25000 sound/double_star.mp3");
+		exit(0);
+	}
+	printf("loaded music\n\n");
+//////////////////////////////////////////
+ft_pause(900);
+///////////////////////////////////////////////
+	ft_pidof_last_mpg123(&g_game.cm_music);
+	printf ("%s\n", g_game.cm_music);
+	g_game.ccmd = ft_strdup("");
+	ft_strjoin_f("bash unmute_pid.sh ", g_game.cm_music, &g_game.ccmd);
+	printf ("%s\n", g_game.ccmd);
+	system(g_game.ccmd);
+	printf("unmute music\n");
+/////////////////////////////////////////////////////
+	printf("----------------------\n\n");
 
 	 g_math.map = malloc(sizeof(char*) * 27);
 	 g_math.map[0] = ft_strdup("############################################");
@@ -205,6 +276,19 @@ int	main(void)
 	g_plr.iplr_z = 0;//player.g_plr.fplr_z0;
 
 
+	ft_init_enemies();
+	ft_put_objects(26, ft_strlen(g_math.map[0]) - 1);
+
+
+	g_tex.tex_txt_01.ptr = mlx_xpm_file_to_image(g_game.mlx, "textures/text/txt_start.xpm", &g_tex.tex_txt_01.width, &g_tex.tex_txt_01.height);
+	g_tex.tex_txt_01.data = (int *)mlx_get_data_addr(g_tex.tex_txt_01.ptr, &g_tex.tex_txt_01.bpp, &g_tex.tex_txt_01.size_line, &g_tex.tex_txt_01.endian);
+	g_tex.tex_txt_01.scale = 0.8;
+	g_tex.tex_txt_01.step = 1 / g_tex.tex_txt_01.scale;
+	ft_put_scaled_img_to_win(&g_game.win_buf, &g_game, &g_tex.tex_txt_01, g_game.iscr_width05 + 30, 200); //del this
+	mlx_put_image_to_window(g_game.mlx, g_game.mlx_win, g_game.win_buf.ptr, 0, 0);
+// delete txt here!!!
+
+
 	/*LETA_start HP
 	  g_tex.tex_hp = malloc(sizeof(t_img_n_tex) * 5);
 	  g_tex.tex_hp[1].ptr = mlx_xpm_file_to_image(g_game.mlx, "textures/healthbar3.xpm", &g_tex.tex_hp[1].width, &g_tex.tex_hp[1].height);
@@ -220,6 +304,7 @@ int	main(void)
 	  g_tex.tex_hp[4].data = (int *)mlx_get_data_addr(g_tex.tex_hp[4].ptr, &g_tex.tex_hp[4].bpp, &g_tex.tex_hp[4].size_line, &g_tex.tex_hp[4].endian);
 	  g_tex.tex_hp[4].scale = 1;
 	  LETA_end HP*/
+
 
 	ft_init_shields();
 	ft_init_armor();
@@ -244,18 +329,6 @@ int	main(void)
 	g_tex.tex_muz_00.opacity = 0.7;
 	g_tex.tex_muz_00.opacity_1 = 1 - 0.7;
 
-
-	g_tex.tex_txt_01.ptr = mlx_xpm_file_to_image(g_game.mlx, "textures/text/txt_start.xpm", &g_tex.tex_txt_01.width, &g_tex.tex_txt_01.height);
-	g_tex.tex_txt_01.data = (int *)mlx_get_data_addr(g_tex.tex_txt_01.ptr, &g_tex.tex_txt_01.bpp, &g_tex.tex_txt_01.size_line, &g_tex.tex_txt_01.endian);
-	g_tex.tex_txt_01.scale = 0.8;
-	g_tex.tex_txt_01.step = 1 / g_tex.tex_txt_01.scale;
-	ft_put_scaled_img_to_win(&g_game.win_buf, &g_game, &g_tex.tex_txt_01, g_game.iscr_width05 + 30, 200); //del this
-	mlx_put_image_to_window(g_game.mlx, g_game.mlx_win, g_game.win_buf.ptr, 0, 0);
-// delete txt here!!!
-
-	ft_init_enemies();
-	ft_put_objects(26, ft_strlen(g_math.map[0]) - 1);
-
 	g_tex.tex_ui_02.ptr = mlx_xpm_file_to_image(g_game.mlx, "textures/ui/loading_bar.xpm", &g_tex.tex_ui_02.width, &g_tex.tex_ui_02.height);
 	g_tex.tex_ui_02.data = (int *)mlx_get_data_addr(g_tex.tex_ui_02.ptr, &g_tex.tex_ui_02.bpp, &g_tex.tex_ui_02.size_line, &g_tex.tex_ui_02.endian);
 	g_tex.tex_ui_02.scale = 0.21;
@@ -266,7 +339,6 @@ int	main(void)
 	mlx_put_image_to_window(g_game.mlx, g_game.mlx_win, g_game.win_buf.ptr, 0, 0);
 
 	g_math.ibottom_sky = malloc(sizeof(int) * g_game.iscr_width);
-
 	g_tex.tex_sky.ptr = mlx_xpm_file_to_image(g_game.mlx, "textures/sky1.xpm", &g_tex.tex_sky.width, &g_tex.tex_sky.height);
 	g_tex.tex_sky.data = (int *)mlx_get_data_addr(g_tex.tex_sky.ptr, &g_tex.tex_sky.bpp, &g_tex.tex_sky.size_line, &g_tex.tex_sky.endian);
 	g_tex.tex_sky.scale = 1;
@@ -290,6 +362,9 @@ int	main(void)
 	g_tex.tex_c_line_h.opacity = 0.7;
 	g_tex.tex_c_line_h.opacity_1 = 1 - 0.7;
 
+	i_load_x += 9;
+	ft_put_scaled_img_lt_to_win(&g_game.win_buf, &g_game, &g_tex.tex_ui_02, i_load_x, g_game.iscr_height - 27); //del this
+	mlx_put_image_to_window(g_game.mlx, g_game.mlx_win, g_game.win_buf.ptr, 0, 0);
 
 	g_tex.tex_floor = malloc(sizeof(t_img_n_tex) * 10);
 
@@ -311,33 +386,6 @@ int	main(void)
 	mlx_put_image_to_window(g_game.mlx, g_game.mlx_win, g_game.win_buf.ptr, 0, 0);
 
 
-	/* // 2d x y array for x y textures - not plain ones
-	   tex_floor2 = malloc(sizeof(int**) * 10);
-	   int	i = 0;
-	   while (i <= 2)
-	   {
-	   tex_floor2[i] = malloc(sizeof(int*) * tex_floor[i].height);
-	   y = 0;
-	   while (y < tex_floor[i].height)
-	   {
-	   tex_floor2[i][y] = malloc(sizeof(int) * tex_floor[i].width);
-	   x = 0;
-	   while (x < tex_floor[i].width)
-	   {
-	   tex_floor2[i][y][x] = tex_floor[i].data[y * tex_floor[i].width + x];
-	   x++;
-	   }
-	   y++;
-	   }
-	   i++;
-	   }
-	   mlx_destroy_image(g_game.mlx, tex_floor[0].ptr);
-	   mlx_destroy_image(g_game.mlx, tex_floor[1].ptr);
-	   mlx_destroy_image(g_game.mlx, tex_floor[2].ptr);
-	 */
-
-
-
 	ft_init_floors_dist();
 
 
@@ -349,16 +397,38 @@ int	main(void)
 	g_game.root_window = XRootWindow(g_game.dpy, 0);
 	XSelectInput(g_game.dpy, g_game.root_window, KeyReleaseMask);
 
-	kill(pid, SIGINT); ///!!! !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+///////////////////////////////////////////////////
+	g_game.ccmd = ft_strdup("");
+	ft_strjoin_f("kill -9 ", g_game.cm_music, &g_game.ccmd);
+	printf ("%s\n", g_game.ccmd);
+	system(g_game.ccmd);
+	//system("killall mpg123");
+	//kill((pid_t)ft_atoi(g_game.cm_music), SIGINT); ///!!! !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+/////////////////////////////////////////////////
 	pid = fork();
 	if (pid == 0)
 	{
 		system("mpg123 -q -f 22000 --loop -1 sound/surf_amb.mp3");
 		exit(0);
 	}
+/////////////////////////////////////////////////
+
+/*
+	pid = fork();
+	if (pid == 0)
+	{
+		system("mpg123 -f 2000 -q --smooth --keep-open --loop -1 step.mp3 mpg");
+		exit(0);
+	}
 	pid += 2;
-	printf ("pid = %d\n", pid);
+	char *g_game.cm_steps;
+	g_game.cm_steps = ft_strdup("bash mute.sh ");
+	ft_strjoin_f(g_game.cm_steps, ft_itoa(pid), &g_game.cm_steps);
+	system(g_game.cm_steps);
+*/
 
 	mlx_hook(g_game.mlx_win, 2, 1L << 0, ft_key_press, &g_game.mlx_win);
 	mlx_hook(g_game.mlx_win, 3, 1L << 1, ft_key_release, &g_game.mlx_win);
