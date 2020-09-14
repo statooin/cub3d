@@ -51,6 +51,11 @@
 
 # define PI 3.14159
 
+# define SHOW_NONE		0b0000000000000000
+# define SHOW_MAP		0b0000000000000001
+# define SHOW_WEAP		0b0000000000000010
+# define SHOW_HAND		0b0000000000000100
+
 # define PRSD_NONE		0b0000000000000000
 # define PRSD_LEFT		0b0000000000000001
 # define PRSD_RIGHT		0b0000000000000010
@@ -162,6 +167,23 @@ typedef struct			s_const
 	float				fstep_check;
 }						t_const;
 
+typedef struct			s_ui_anim
+{
+	unsigned int		uishown;
+	clock_t	clstart;
+	int	istart_x;
+	int	istart_y;
+	int	istop_x;
+	int	istop_y;
+	int	istop_msec;
+	float	fstart_scale;
+	float	fstop_scale;
+	float	fstart_opac;
+	float	fstop_opac;
+	int	ianim;
+	t_img_n_tex			*tex_anim;
+}						t_ui_anim;
+
 typedef struct			s_math
 {
 	char				**map;
@@ -236,6 +258,7 @@ t_const	g_consts;
 t_math	g_math;
 t_tex	g_tex;
 t_snd	g_snd;
+t_ui_anim	g_ui_anim;
 
 clock_t fps; //delete this - for fps
 clock_t clstart;
@@ -289,6 +312,8 @@ void	ft_put_img_lt_to_win(t_img_n_tex *win_buf, t_game *g_game,
 void	ft_put_objects(int y, int x0);
 void	ft_put_scaled_img_lt_to_win(t_img_n_tex *win_buf, t_game *g_game,
 	t_img_n_tex *tex_01, int img_x_start, int img_y_start);
+void	ft_put_scaled_opac_img_lt_to_win(t_img_n_tex *win_buf,
+	t_game *g_game, t_img_n_tex *tex_01, int img_x_start, int img_y_start);
 void	ft_put_scaled_img_to_win(t_img_n_tex *win_buf, t_game *g_game,
 	t_img_n_tex *tex_01, int img_x_center, int img_y_center);
 void	ft_put_scaled_opac_img_to_win(t_img_n_tex *win_buf, t_game *g_game,

@@ -68,11 +68,44 @@ void	ft_anim_ui(clock_t *clstart, int istart_x, int istart_y, int istop_x, int i
 }
 */
 
+void	ft_ui_move_lt(t_img_n_tex *tex_ui)
+{
+	static int	imsec;
+	static int	x;
+	static int	y;
+
+	if (imsec > g_ui_anim.istop_msec)
+	{
+		//g_plr.iplay_ui = 0;
+		imsec = 0;
+		g_ui_anim.istop_msec = 0;
+		g_ui_anim.ianim = 0;
+		g_ui_anim.uishown |= SHOW_MAP;
+	}
+	else
+	{
+		imsec = (clock() - g_ui_anim.clstart) * 1000 / CLOCKS_PER_SEC;
+		x = g_ui_anim.istart_x + (g_ui_anim.istop_x - g_ui_anim.istart_x) * imsec / g_ui_anim.istop_msec;
+		y = g_ui_anim.istart_y + (g_ui_anim.istop_y - g_ui_anim.istart_y) * imsec / g_ui_anim.istop_msec;
+		tex_ui->opacity = g_ui_anim.fstart_opac + (g_ui_anim.fstop_opac - g_ui_anim.fstart_opac) * imsec / g_ui_anim.istop_msec;
+		tex_ui->scale = g_ui_anim.fstart_scale + (g_ui_anim.fstop_scale - g_ui_anim.fstart_scale) * imsec / g_ui_anim.istop_msec;
+
+		if (tex_ui->opacity < 1)
+			ft_put_scaled_opac_img_lt_to_win (&g_game.win_buf, &g_game, \
+				tex_ui, x, y);
+		else
+			ft_put_scaled_img_lt_to_win(&g_game.win_buf, &g_game, \
+				tex_ui, x, y);
+	}
+}
+
+/*
 void	ft_draw_ui_map()
 {
 	ft_put_scaled_opac_img_to_win(&g_game.win_buf, &g_game, \
 		&g_tex.tex_map_ui, g_game.iscr_width05, g_game.iscr_height05 + 100);
 }
+*/
 
 int	ft_draw_world(void)
 {
@@ -120,7 +153,30 @@ int	ft_draw_world(void)
 			//ft_draw_weapon();
 		}
 		if ((g_plr.uikeys_prsd & PRSD_M) != 0)
-			ft_draw_ui_map();
+		{
+			if ((g_plr.uishown & SHOW_MAP) != 0 && g_ui_anim.ianim == 0)
+			{
+				g_ui_anim.clstart = clock();
+				g_ui_anim.istart_x = g_game.iscr_width05;
+				g_ui_anim.istart_y = g_game.iscr_height05;
+				g_ui_anim.istop_x = g_game.iscr_width05 - 200;
+				g_ui_anim.istop_y = g_game.iscr_height05 - 200;
+				g_ui_anim.istop_msec = 5000;
+				g_ui_anim.fstart_scale = 0.1;
+				g_ui_anim.fstop_scale = 1.0;
+				g_ui_anim.fstart_opac = 0.1;
+				g_ui_anim.fstop_opac = 0.9;
+				g_ui_anim.ianim = 1;
+				g_ui_anim.*tex_anim = &g_tex.tex_map_ui;
+				ft_ui_move_lt(&g_tex.tex_map_ui);
+			}
+			else if (g_ui_anim.ianim == 1 && g_ui_anim.istop_msec > 0)
+				ft_ui_move_lt(&g_tex.tex_map_ui);
+			else
+				ft_put_scaled_opac_img_to_win(&g_game.win_buf, &g_game, \
+					&g_tex.tex_map_ui, g_game.iscr_width05 - 200, g_game.iscr_height05 - 200);
+			//ft_draw_ui_map();
+		}
 	}
 	ft_draw_vignette();//&g_game.win_buf, &g_game);
 
