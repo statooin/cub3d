@@ -18,6 +18,9 @@ int	ft_mouse_move(int x, int y)
 	//static int	old_y;
 	int	x_step;
 
+	if (g_plr.iplay_cut_scene != 0)
+		return (1);
+
 	if (x < 100)  // need fix g_math here - need to know windows coords
 	{
 		old_x = g_game.iscr_width - 150;

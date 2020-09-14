@@ -14,8 +14,16 @@
 
 void	ft_holster_weapon(void)
 {
+	int	pid;
+
 	if ((g_plr.uikeys_prsd & PRSD_H) != 0)
 		g_plr.uikeys_prsd -= PRSD_H;
 	else
 		g_plr.uikeys_prsd |= PRSD_H;
+	pid = fork();
+	if (pid == 0)
+	{
+		system("mpg123 -q -f 25000 sound/draw_weapon.mp3");
+		exit(0);
+	}
 }

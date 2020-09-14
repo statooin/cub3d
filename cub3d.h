@@ -96,6 +96,7 @@ typedef struct			s_game
 	int					iscr_height;
 	int					iceilling_col;
 	int					ifloor_col;
+	int					iscr_width_m1;
 	int					iscr_height_m1;
 	int					iscr_width05;
 	int					iscr_height05;
@@ -104,11 +105,24 @@ typedef struct			s_game
 	void				*win;
 	Display				*dpy;
 	Window				root_window;
-	char				*cm_steps;
-	char				*cm_music;
+}						t_game;
+
+typedef struct			s_snd
+{
+	char				*cstp_surf_mu;
+	char				*crun_surf_mu;
+	char				*cmus_mu;
+	char				*camp_surf_pid;
+	char				*cstp_surf_un;
+	char				*crun_surf_un;
+	char				*cmus_un;
+	char				*cstp_surf_pid;
+	char				*crun_surf_pid;
+	char				*cmus_pid;
 	char				*ccmd;
 	int					isteps;
-}						t_game;
+	int					irun;
+}						t_snd;
 
 typedef struct			s_player
 {
@@ -124,6 +138,8 @@ typedef struct			s_player
 	clock_t				cl_regen;
 	unsigned int		uikeys_prsd;
 	int					hp_count; // = 1
+	int					iplay_cut_scene;
+	//int					iplay_ui;
 }						t_player;
 //int iKeyOff; // duration of jump
 //int iInJump = 0; // check if in jump
@@ -189,6 +205,7 @@ typedef struct			s_tex
 	t_img_n_tex			tex_c_line_h;
 	t_img_n_tex			tex_muz_00;
 	t_img_n_tex			*tex_armor;
+	t_img_n_tex			tex_map_ui;
 }						t_tex;
 //int	***tex_floor2;
 
@@ -218,8 +235,10 @@ t_player	g_plr;
 t_const	g_consts;
 t_math	g_math;
 t_tex	g_tex;
+t_snd	g_snd;
 
 clock_t fps; //delete this - for fps
+clock_t clstart;
 
 int		ft_close();
 void	ft_draw_crosshair();
@@ -229,7 +248,7 @@ void	ft_draw_hp();
 void	ft_draw_simple_color_floor();
 void	ft_draw_simple_color_sky();
 void	ft_draw_skybox();
-void	ft_draw_vignette(t_img_n_tex *win_buf, t_game *g_game);
+void	ft_draw_vignette();//t_img_n_tex *win_buf, t_game *g_game);
 void	ft_draw_wall_stripe(float *fray_ang, int *itest_x, int *ihit_wall, float *fdist_to_wall, float *ftest_x, float *ftest_y);
 void	ft_draw_wall_stripes_all(float *fray_ang, t_objects *obj, int *i);
 void	ft_draw_walls();

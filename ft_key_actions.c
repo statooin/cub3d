@@ -58,14 +58,30 @@ void	ft_key_move(void)
 		}
 	}
 
-if (g_game.isteps == 0)
-{
-	g_game.isteps = 1;
-	g_game.ccmd = ft_strdup("");
-	ft_strjoin_f("bash unmute_pid.sh ", g_game.cm_steps, &g_game.ccmd);
-	printf ("%s\n", g_game.ccmd);
-	system(g_game.ccmd);
-}
+	if ((g_plr.uikeys_prsd & PRSD_SHIFT) != 0 && g_snd.irun == 0 && g_snd.isteps == 0)
+	{
+		g_snd.irun = 1;
+		system(g_snd.crun_surf_un);
+	}
+	else if ((g_plr.uikeys_prsd & PRSD_SHIFT) != 0 && g_snd.isteps == 1)
+	{
+		g_snd.isteps = 0;
+		system(g_snd.cstp_surf_mu);
+		g_snd.irun = 1;
+		system(g_snd.crun_surf_un);
+	}
+	else if ((g_plr.uikeys_prsd & PRSD_SHIFT) == 0 && g_snd.irun == 1)
+	{
+		g_snd.irun = 0;
+		system(g_snd.crun_surf_mu);
+		g_snd.isteps = 1;
+		system(g_snd.cstp_surf_un);
+	}
+	else if ((g_plr.uikeys_prsd & PRSD_SHIFT) == 0)
+	{
+		g_snd.isteps = 1;
+		system(g_snd.cstp_surf_un);
+	}
 
 }
 
@@ -73,13 +89,13 @@ void	ft_key_actions(void)
 {
 	if ((g_plr.uikeys_prsd & PRSD_DOWN_S) != 0 || (g_plr.uikeys_prsd & PRSD_UP_W) != 0 || (g_plr.uikeys_prsd & PRSD_D) != 0 || (g_plr.uikeys_prsd & PRSD_A) != 0)
 		ft_key_move();
-	else if (g_game.isteps == 1)
+	else if (g_snd.isteps == 1 || g_snd.irun == 1)
 	{
-		g_game.isteps = 0;
-		g_game.ccmd = ft_strdup("");
-		ft_strjoin_f("bash mute_pid.sh ", g_game.cm_steps, &g_game.ccmd);
-		printf ("%s\n", g_game.ccmd);
-		system(g_game.ccmd);
+		g_snd.irun = 0;
+		g_snd.isteps = 0;
+		system(g_snd.crun_surf_mu);
+		system(g_snd.cstp_surf_mu);
+		//printf ("%s\n", g_snd.cstp_surf_mu);
 	}
 
 	if ((g_plr.uikeys_prsd & PRSD_LEFT) != 0)
@@ -104,7 +120,7 @@ void	ft_key_actions(void)
 	if ((g_plr.uikeys_prsd & PRSD_E) != 0)
 		ft_key_e();
 	if ((g_plr.uikeys_prsd & PRSD_SHIFT) != 0)
-		g_plr.fplr_v = 0.10f;
+		g_plr.fplr_v = 0.12f;
 	else if ((g_plr.uikeys_prsd & PRSD_SHIFT) == 0)
 		g_plr.fplr_v = 0.04f;
 

@@ -30,6 +30,8 @@ int	ft_key_press(int ikey)
 		g_plr.uikeys_prsd |= PRSD_A;
 	if (ikey == KEY_D)
 		g_plr.uikeys_prsd |= PRSD_D;
+
+
 	if (ikey == KEY_SHIFT)
 	{
 		if ((g_plr.uikeys_prsd & PRSD_SHIFT) != 0)
@@ -37,7 +39,19 @@ int	ft_key_press(int ikey)
 		else
 			g_plr.uikeys_prsd |= PRSD_SHIFT;
 	}
+	if (ikey == KEY_M)
+	{
+		if ((g_plr.uikeys_prsd & PRSD_M) != 0)
+			g_plr.uikeys_prsd -= PRSD_M;
+		else
+			g_plr.uikeys_prsd |= PRSD_M;
+	}
 	if (ikey == KEY_ESC)
-		ft_close();
+	{
+		if (g_plr.iplay_cut_scene != 0)
+			g_plr.iplay_cut_scene = 0;
+		else
+			ft_close();
+	}
 	return (1);
 }

@@ -15,8 +15,51 @@
 
 #include<string.h>
 
+void	ft_mute_unmute_pid(char **cpid, char **cmute, char **cunmute)
+{
+        char	pidline[1024];
+	char	*ctmp;
+	FILE	*fp;
 
-void	ft_pidof_last_mpg123(char **pid)
+	ctmp = ft_strdup(""); ///re do ft_strjoin_f for NULL input - not ft_strdup
+	ft_strjoin_f("bash mute_pid_echo.sh ", *cpid, &ctmp);
+	printf ("%s\n", ctmp);
+
+        fp = popen(ctmp,"r");
+        fgets(pidline,1024,fp);
+	printf("----------------------\n\n");
+	printf ("%s\n", pidline);
+	*cmute = ft_strdup(pidline);
+	printf("----------------------\n\n");
+	pclose(fp);
+
+	ctmp = ft_strdup(""); ///re do ft_strjoin_f for NULL input - not ft_strdup
+	ft_strjoin_f("bash unmute_pid_echo.sh ", *cpid, &ctmp);
+	printf ("%s\n", ctmp);
+
+        fp = popen(ctmp,"r");
+        fgets(pidline,1024,fp);
+	printf("----------------------\n\n");
+	printf ("%s\n", pidline);
+	*cunmute = ft_strdup(pidline);
+	printf("----------------------\n\n");
+	pclose(fp);
+}
+
+void	ft_pidof_last_mpg123(char **cpid)
+{
+        char pidline[1024];
+        FILE *fp;
+
+	fp = popen("pidof mpg123","r");
+        fgets(pidline,1024,fp);
+        printf("all pids: %s\n",pidline);
+	*cpid = ft_strdup(strtok (pidline," "));
+	pclose(fp);
+}
+
+/*
+void	ft_pidof_first_mpg123(char **pid)
 {
         char pidline[1024];
         //char *pid;
@@ -28,18 +71,18 @@ void	ft_pidof_last_mpg123(char **pid)
         printf("%s",pidline);
         //pid = strtok (pidline," ");
 	*pid = ft_strdup(strtok (pidline," "));
-/*        while(pid != NULL)
+       while(pid != NULL)
 	{
 		pidno[i] = atoi(pid);
-		g_game.cm_steps = ft_strdup(pid);
+		g_snd.cstp_surf = ft_strdup(pid);
 		printf("%d\n",pidno[i]);
 		pid = strtok (NULL , " ");
 		i++;
 	}
-*/
-	printf("%s\n\n", g_game.cm_steps);
+	printf("%s\n\n", g_snd.cstp_surf);
 	pclose(fp);
 }
+*/
 
 void	ft_init_walls(void)
 {
@@ -102,46 +145,156 @@ void	ft_init_walls(void)
 	g_tex.tex_wall[4].iprior = 8;
 }
 
+void	ft_load_snd_steps()
+{
+	int	pid;
 
+	printf("----------------------\n");
+	pid = fork();
+	if (pid == 0)
+	{
+		system("mpg123 -f 14000 -q --loop -1 sound/step_surf.mp3");
+		exit(0);
+	}
+	printf("loaded step_surf\n");
+
+ft_pause(1100);
+
+	ft_pidof_last_mpg123(&g_snd.cstp_surf_pid);
+	printf ("pid: %s\n", g_snd.cstp_surf_pid);
+	system("pacmd list-sink-inputs | grep index");
+	ft_mute_unmute_pid(&g_snd.cstp_surf_pid, &g_snd.cstp_surf_mu, &g_snd.cstp_surf_un);
+	system(g_snd.cstp_surf_mu);
+	printf("muted step_surf\n");
+	printf("----------------------\n\n");
+}
+
+void	ft_load_snd_run()
+{
+	int	pid;
+
+	pid = fork();
+	if (pid == 0)
+	{
+		system("mpg123 -f 14000 -q --loop -1 sound/run_surf.mp3");
+		exit(0);
+	}
+	printf("loaded run_surf\n\n");
+
+ft_pause(1100);
+
+	ft_pidof_last_mpg123(&g_snd.crun_surf_pid);
+	printf ("pid: %s\n", g_snd.crun_surf_pid);
+	system("pacmd list-sink-inputs | grep index");
+	ft_mute_unmute_pid(&g_snd.crun_surf_pid, &g_snd.crun_surf_mu, &g_snd.crun_surf_un);
+	system(g_snd.crun_surf_mu);
+	printf("muted run_surf\n");
+	printf("----------------------\n\n");
+}
+
+void	ft_load_snd_music()
+{
+	int	pid;
+
+	pid = fork();
+	if (pid == 0)
+	{
+		system("mpg123 -q -f 25000 sound/double_star.mp3");
+		exit(0);
+	}
+	printf("loaded music\n\n");
+
+ft_pause(2100);
+
+	ft_pidof_last_mpg123(&g_snd.cmus_pid);
+	printf ("pid: %s\n", g_snd.cmus_pid);
+	system("pacmd list-sink-inputs | grep index");
+	ft_mute_unmute_pid(&g_snd.cmus_pid, &g_snd.cmus_mu, &g_snd.cmus_un);
+	system(g_snd.cmus_un);
+	printf("unmuted music\n");
+	printf("----------------------\n\n");
+}
+
+void	ft_load_snd_surf_ambient()
+{
+	int	pid;
+
+	pid = fork();
+	if (pid == 0)
+	{
+		system("mpg123 -q -f 22000 --loop -1 sound/surf_amb.mp3");
+		exit(0);
+	}
+
+ft_pause(1100);
+
+	ft_pidof_last_mpg123(&g_snd.camp_surf_pid);
+	printf ("pid: %s\n", g_snd.camp_surf_pid);
+	printf("----------------------\n\n");
+}
+
+void	ft_load_maps()
+{
+	int	i;
+	//int	j;
+	//int	ilen;
+	int	icount;
+	char  *line;
+	int   fd;
+
+	icount = 0;
+	fd = open("maps/map.map", O_RDONLY);
+	while (get_next_line(fd, &line) > 0)
+	{
+		free(line);
+		icount++;
+	}
+	free(line);
+	close(fd);
+
+	g_math.map = malloc(sizeof(char*) * icount);
+
+	i = 0;
+	fd = open("maps/map.map", O_RDONLY);
+	while (i < icount)
+	{
+		get_next_line(fd, &g_math.map[i]);
+		printf("|%s\n", g_math.map[i]);
+		i++;
+	}
+	close(fd);
+
+	g_math.map_floor = malloc(sizeof(char*) * icount);
+
+	//ilen = ft_strlen(g_math.map[0]);
+	i = 0;
+	fd = open("maps/floor.map", O_RDONLY);
+	while (i < icount)
+	{
+		get_next_line(fd, &g_math.map_floor[i]);
+		//j = -1;
+		//while (++j <= ilen)
+		//	if (g_math.map[i][j] == '.')
+		//		g_math.map[i][j] = ' ';
+		printf("|%s|\n", g_math.map_floor[i]);
+		i++;
+	}
+	close(fd);
+}
 
 int	main(void)
 {
 	int	i_load_x;
-	int	pid;
-	//char	*g_game.ccmd;
 
 	ft_cub_validation();
 
-	printf("----------------------\n\n");
-///////////////////////////////////////////////////
-	pid = fork();
-	if (pid == 0)
-	{
-		system("mpg123 -f 2000 -q --loop -1 sound/step4.mp3 mpg");
-		exit(0);
-	}
-	printf("loaded steps\n\n");
-///////////////////////////////////////////////
-ft_pause(1100);
-///////////////////////////////////////////////
-
-	system("pacmd list-sink-inputs | grep index");
-
-	ft_pidof_last_mpg123(&g_game.cm_steps);
-	printf ("%s\n", g_game.cm_steps);
-	//g_game.cm_steps = ft_strdup("bash mute_pid.sh ");
-	g_game.ccmd = ft_strdup("");
-	ft_strjoin_f("bash mute_pid.sh ", g_game.cm_steps, &g_game.ccmd);
-	printf ("%s\n", g_game.ccmd);
-	system(g_game.ccmd);
-	printf("muted steps\n");
-/////////////////////////////////////////////////////
-	printf("----------------------\n\n");
-
+	ft_load_snd_steps();
+	ft_load_snd_run();
 
 	//g_game.iscr_width = ; //1280 1024	1280	1366	1600	1920;
 //	g_game.iscr_height = ;//720 576	720	768	900	1080
 	g_game.iscr_height_m1 = g_game.iscr_height - 1;
+	g_game.iscr_width_m1 = g_game.iscr_width - 1;
 	g_game.iscr_width05 = g_game.iscr_width / 2;
 	g_game.iscr_height05 = g_game.iscr_height / 2;
 
@@ -168,7 +321,6 @@ ft_pause(1100);
 	g_game.win_buf.bpp_8 = g_game.win_buf.bpp / 8;
 
 
-
 	//ui loading
 	g_tex.tex_ui_01.ptr = mlx_xpm_file_to_image(g_game.mlx, "textures/ui/loading.xpm", &g_tex.tex_ui_01.width, &g_tex.tex_ui_01.height);
 	g_tex.tex_ui_01.data = (int *)mlx_get_data_addr(g_tex.tex_ui_01.ptr, &g_tex.tex_ui_01.bpp, &g_tex.tex_ui_01.size_line, &g_tex.tex_ui_01.endian);
@@ -179,68 +331,22 @@ ft_pause(1100);
 	mlx_put_image_to_window(g_game.mlx, g_game.mlx_win, g_game.win_buf.ptr, 0, 0);
 
 
+	ft_load_snd_music();
 
-///////////////////////////////////////////
-	pid = fork();
-	if (pid == 0)
-	{
-		system("mpg123 -q -f 25000 sound/double_star.mp3");
-		exit(0);
-	}
-	printf("loaded music\n\n");
-//////////////////////////////////////////
-ft_pause(900);
-///////////////////////////////////////////////
-	ft_pidof_last_mpg123(&g_game.cm_music);
-	printf ("%s\n", g_game.cm_music);
-	g_game.ccmd = ft_strdup("");
-	ft_strjoin_f("bash unmute_pid.sh ", g_game.cm_music, &g_game.ccmd);
-	printf ("%s\n", g_game.ccmd);
-	system(g_game.ccmd);
-	printf("unmute music\n");
-/////////////////////////////////////////////////////
-	printf("----------------------\n\n");
+	ft_load_maps();
 
-	 g_math.map = malloc(sizeof(char*) * 27);
-	 g_math.map[0] = ft_strdup("############################################");
-	 g_math.map[1] = ft_strdup("#341234234123411123411234312341234123412341#");
-	 g_math.map[2] = ft_strdup("#26  1  2345      123423 347              2#");
-	 g_math.map[3] = ft_strdup("#1        7   13    12                    2#");
-	 g_math.map[4] = ft_strdup("#4    56       24       4    56       24   #");
-	 g_math.map[5] = ft_strdup("#347  8    3    1234   347  8    3    1234##");
-	 g_math.map[6] = ft_strdup("#2       1243      23 22       1243      23#");
-	 g_math.map[7] = ft_strdup("#1     1234#2341             1234#2341    2#");
-	 g_math.map[8] = ft_strdup("#23  623#######123  21234  623#######123  2#");
-	 g_math.map[9] = ft_strdup("##42  74##1234###4  33##42  74##1234###2 51#");
-	g_math.map[10] = ft_strdup("#321   1234 1234#12  4#321   1234 1234#1234#");
-	g_math.map[11] = ft_strdup("#26   43      12##33 14#26  43      12######");
-	g_math.map[12] = ft_strdup("#3   12   5    23##432##3   12   5   23#####");
-	g_math.map[13] = ft_strdup("#4        6     34#####4        6     34####");
-	g_math.map[14] = ft_strdup("#11    7     3   45####11    7     3   45###");
-	g_math.map[15] = ft_strdup("##21   5     21   1#####21   5     21   1###");
-	g_math.map[16] = ft_strdup("###23             2######23             2###");
-	g_math.map[17] = ft_strdup("####21    431     3#######21    431     3###");
-	g_math.map[18] = ft_strdup("####17   73#25   12#######17   73#25   12###");
-	g_math.map[19] = ft_strdup("##436     123   24#######36     123   24####");
-	g_math.map[20] = ft_strdup("#43            12######43            12#####");
-	g_math.map[21] = ft_strdup("#1  1      7   3#######1  1      7   3######");
-	g_math.map[22] = ft_strdup("#2            12#######2            12######");
-	g_math.map[23] = ft_strdup("#321   n     12########321         12#######");
-	g_math.map[24] = ft_strdup("###21      123###########21      123########");
-	g_math.map[25] = ft_strdup("###1111234114############1111234114#########");
-	g_math.map[26] = ft_strdup("############################################");
-
+/*
 	g_math.map_floor = malloc(sizeof(char*) * 27);
-	g_math.map_floor[0] = ft_strdup("                                            ");
-	g_math.map_floor[1] = ft_strdup("                                            ");
-	g_math.map_floor[2] = ft_strdup("   12 12   1212122      2   12121212121212  ");
-	g_math.map_floor[3] = ft_strdup("  12121212 122  1212  12121212121212121212  ");
-	g_math.map_floor[4] = ft_strdup("  12122 1212122  1212122 12122 1212122  122 ");
-	g_math.map_floor[5] = ft_strdup("    12 1212 1212    122   12 1212 1212      ");
-	g_math.map_floor[6] = ft_strdup("  1212122    121212  2  1212122    121212   ");
-	g_math.map_floor[7] = ft_strdup("  12122         1212121212122         1212  ");
-	g_math.map_floor[8] = ft_strdup("   12             12     12             12  ");
-	g_math.map_floor[9] = ft_strdup("    12            12      12            12  ");
+	 g_math.map_floor[0] = ft_strdup("                                            ");
+	 g_math.map_floor[1] = ft_strdup("                                            ");
+	 g_math.map_floor[2] = ft_strdup("   12 12   1212122      2   12121212121212  ");
+	 g_math.map_floor[3] = ft_strdup("  12121212 122  1212  12121212121212121212  ");
+	 g_math.map_floor[4] = ft_strdup("  12122 1212122  1212122 12122 1212122  1   ");
+	 g_math.map_floor[5] = ft_strdup("    12 1212 1212    122   12 1212 1212      ");
+	 g_math.map_floor[6] = ft_strdup("  1212122    121212  2  1212122    121212   ");
+	 g_math.map_floor[7] = ft_strdup("  12122         1212121212122         1212  ");
+	 g_math.map_floor[8] = ft_strdup("   12             12     12             12  ");
+	 g_math.map_floor[9] = ft_strdup("    12            12      12            12  ");
 	g_math.map_floor[10] = ft_strdup("    122    2       12     122    2          ");
 	g_math.map_floor[11] = ft_strdup("   122  121212      2     12  121212        ");
 	g_math.map_floor[12] = ft_strdup("  122  12121212          122  1212122       ");
@@ -258,7 +364,7 @@ ft_pause(900);
 	g_math.map_floor[24] = ft_strdup("     121212                121212           ");
 	g_math.map_floor[25] = ft_strdup("                                            ");
 	g_math.map_floor[26] = ft_strdup("                                            ");
-
+*/
 	g_plr.fplr_z0 = -0.6f; //player's "height"
 	g_plr.fplr_zhead = 1.0f; // !! ?? how to crouch ctrl
 	g_consts.ffov = 3.14159 / 3.2; // /8 !! need fix with / 3.0  // field of view 15.0-20.0 this id sniper zoom!! )))
@@ -275,8 +381,9 @@ ft_pause(900);
 	g_plr.uikeys_prsd = PRSD_NONE;
 	g_plr.iplr_z = 0;//player.g_plr.fplr_z0;
 
-
-	ft_init_enemies();
+/*
+	ft_init_enemies(); //////!!!!!!!!!!
+*/
 	ft_put_objects(26, ft_strlen(g_math.map[0]) - 1);
 
 
@@ -321,6 +428,13 @@ ft_pause(900);
 	g_tex.tex_vign.opacity_1 = 1 - 0.8;
 
 	ft_init_vignette(&g_game, &g_tex.tex_vign);
+
+	g_tex.tex_map_ui.ptr = mlx_xpm_file_to_image(g_game.mlx, "textures/ui/map_ui.xpm", &g_tex.tex_map_ui.width, &g_tex.tex_map_ui.height);
+	g_tex.tex_map_ui.data = (int *)mlx_get_data_addr(g_tex.tex_map_ui.ptr, &g_tex.tex_map_ui.bpp, &g_tex.tex_map_ui.size_line, &g_tex.tex_muz_00.endian);
+	g_tex.tex_map_ui.scale = 1;
+	g_tex.tex_map_ui.step = 1 / g_tex.tex_map_ui.scale;
+	g_tex.tex_map_ui.opacity = 0.7;
+	g_tex.tex_map_ui.opacity_1 = 1 - 0.7;
 
 	g_tex.tex_muz_00.ptr = mlx_xpm_file_to_image(g_game.mlx, "textures/gun/muzzle_flash_00.xpm", &g_tex.tex_muz_00.width, &g_tex.tex_muz_00.height);
 	g_tex.tex_muz_00.data = (int *)mlx_get_data_addr(g_tex.tex_muz_00.ptr, &g_tex.tex_muz_00.bpp, &g_tex.tex_muz_00.size_line, &g_tex.tex_muz_00.endian);
@@ -399,36 +513,18 @@ ft_pause(900);
 
 
 ///////////////////////////////////////////////////
-	g_game.ccmd = ft_strdup("");
-	ft_strjoin_f("kill -9 ", g_game.cm_music, &g_game.ccmd);
-	printf ("%s\n", g_game.ccmd);
-	system(g_game.ccmd);
-	//system("killall mpg123");
-	//kill((pid_t)ft_atoi(g_game.cm_music), SIGINT); ///!!! !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	g_snd.ccmd = ft_strdup("");
+	ft_strjoin_f("kill -9 ", g_snd.cmus_pid, &g_snd.ccmd);
+	printf ("%s\n", g_snd.ccmd);
+	system(g_snd.ccmd);
+	//kill((pid_t)ft_atoi(g_snd.cmus_surf), SIGINT); ///!!! !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-
-/////////////////////////////////////////////////
-	pid = fork();
-	if (pid == 0)
-	{
-		system("mpg123 -q -f 22000 --loop -1 sound/surf_amb.mp3");
-		exit(0);
-	}
-/////////////////////////////////////////////////
-
-/*
-	pid = fork();
-	if (pid == 0)
-	{
-		system("mpg123 -f 2000 -q --smooth --keep-open --loop -1 step.mp3 mpg");
-		exit(0);
-	}
-	pid += 2;
-	char *g_game.cm_steps;
-	g_game.cm_steps = ft_strdup("bash mute.sh ");
-	ft_strjoin_f(g_game.cm_steps, ft_itoa(pid), &g_game.cm_steps);
-	system(g_game.cm_steps);
-*/
+	ft_load_snd_surf_ambient();
+	//g_plr.iplr_z = 300;
+	//g_plr.fplr_x -= 0.01;
+	//g_plr.fplr_a = -2;
+	clstart = clock();
+	g_plr.iplay_cut_scene = 1;
 
 	mlx_hook(g_game.mlx_win, 2, 1L << 0, ft_key_press, &g_game.mlx_win);
 	mlx_hook(g_game.mlx_win, 3, 1L << 1, ft_key_release, &g_game.mlx_win);
