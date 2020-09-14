@@ -6,7 +6,7 @@
 /*   By: bjebedia <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/04 15:00:16 by bjebedia          #+#    #+#             */
-/*   Updated: 2020/09/10 18:42:44 by bjebedia         ###   ########.fr       */
+/*   Updated: 2020/09/14 15:25:42 by bjebedia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -319,6 +319,7 @@ void	ft_put_scaled_img_to_win(t_img_n_tex *win_buf, t_game *g_game,
 void	ft_put_scaled_opac_img_to_win(t_img_n_tex *win_buf, t_game *g_game,
 	t_img_n_tex *tex_01, int img_x_center, int img_y_center);
 void	ft_reset_enemies();
+void	ft_savebmp();
 int		ft_shades(int *color, float *fdist_to_wall);
 void	ft_shields();
 
