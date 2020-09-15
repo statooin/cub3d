@@ -38,10 +38,11 @@ void		ft_cut_scene()
 		while (img_x++ < g_game.iscr_width_m1)
 		{
 			img_y = 0;
-			while (img_y++ < g_game.iscr_height / iblack)
+			while (img_y < g_game.iscr_height / iblack)
 			{
 				g_game.win_buf.data[img_y * g_game.iscr_width + img_x] = 0;
 				g_game.win_buf.data[(g_game.iscr_height_m1 - img_y) * g_game.iscr_width + img_x] = 0;
+				img_y++;
 			}
 		}
 	}
@@ -68,7 +69,7 @@ void	ft_anim_ui(clock_t *clstart, int istart_x, int istart_y, int istop_x, int i
 }
 */
 
-void	ft_ui_move_lt(t_img_n_tex *tex_ui)
+void	ft_ui_move_lt()
 {
 	static int	imsec;
 	static int	x;
@@ -78,24 +79,57 @@ void	ft_ui_move_lt(t_img_n_tex *tex_ui)
 	{
 		//g_plr.iplay_ui = 0;
 		imsec = 0;
-		g_ui_anim.istop_msec = 0;
+		//g_ui_anim.istop_msec = 0;
 		g_ui_anim.ianim = 0;
-		g_ui_anim.uishown |= SHOW_MAP;
+		g_ui_anim.uishown |= SHOWN_MAP;
+		g_ui_anim.tex_anim = NULL;
 	}
 	else
 	{
 		imsec = (clock() - g_ui_anim.clstart) * 1000 / CLOCKS_PER_SEC;
 		x = g_ui_anim.istart_x + (g_ui_anim.istop_x - g_ui_anim.istart_x) * imsec / g_ui_anim.istop_msec;
 		y = g_ui_anim.istart_y + (g_ui_anim.istop_y - g_ui_anim.istart_y) * imsec / g_ui_anim.istop_msec;
-		tex_ui->opacity = g_ui_anim.fstart_opac + (g_ui_anim.fstop_opac - g_ui_anim.fstart_opac) * imsec / g_ui_anim.istop_msec;
-		tex_ui->scale = g_ui_anim.fstart_scale + (g_ui_anim.fstop_scale - g_ui_anim.fstart_scale) * imsec / g_ui_anim.istop_msec;
+		g_ui_anim.tex_anim->opacity = g_ui_anim.fstart_opac + (g_ui_anim.fstop_opac - g_ui_anim.fstart_opac) * imsec / g_ui_anim.istop_msec;
+		g_ui_anim.tex_anim->scale = g_ui_anim.fstart_scale + (g_ui_anim.fstop_scale - g_ui_anim.fstart_scale) * imsec / g_ui_anim.istop_msec;
 
-		if (tex_ui->opacity < 1)
+		if (g_ui_anim.tex_anim->opacity < 1)
 			ft_put_scaled_opac_img_lt_to_win (&g_game.win_buf, &g_game, \
-				tex_ui, x, y);
+				g_ui_anim.tex_anim , x, y);
 		else
 			ft_put_scaled_img_lt_to_win(&g_game.win_buf, &g_game, \
-				tex_ui, x, y);
+				g_ui_anim.tex_anim , x, y);
+	}
+}
+
+void	ft_ui_move()
+{
+	static int	imsec;
+	static int	x;
+	static int	y;
+
+	if (imsec > g_ui_anim.istop_msec)
+	{
+		//g_plr.iplay_ui = 0;
+		imsec = 0;
+		//g_ui_anim.istop_msec = 0;
+		g_ui_anim.ianim = 0;
+		g_ui_anim.uishown |= SHOWN_MAP;
+		g_ui_anim.tex_anim = NULL;
+	}
+	else
+	{
+		imsec = (clock() - g_ui_anim.clstart) * 1000 / CLOCKS_PER_SEC;
+		x = g_ui_anim.istart_x + (g_ui_anim.istop_x - g_ui_anim.istart_x) * imsec / g_ui_anim.istop_msec;
+		y = g_ui_anim.istart_y + (g_ui_anim.istop_y - g_ui_anim.istart_y) * imsec / g_ui_anim.istop_msec;
+		g_ui_anim.tex_anim->opacity = g_ui_anim.fstart_opac + (g_ui_anim.fstop_opac - g_ui_anim.fstart_opac) * imsec / g_ui_anim.istop_msec;
+		g_ui_anim.tex_anim->scale = g_ui_anim.fstart_scale + (g_ui_anim.fstop_scale - g_ui_anim.fstart_scale) * imsec / g_ui_anim.istop_msec;
+		g_ui_anim.tex_anim->step = 1 / g_ui_anim.tex_anim->scale;
+		if (g_ui_anim.tex_anim->opacity < 1)
+			ft_put_scaled_opac_img_to_win (&g_game.win_buf, &g_game, \
+				g_ui_anim.tex_anim , x, y);
+		else
+			ft_put_scaled_img_to_win(&g_game.win_buf, &g_game, \
+				g_ui_anim.tex_anim , x, y);
 	}
 }
 
@@ -154,29 +188,31 @@ int	ft_draw_world(void)
 		}
 		if ((g_plr.uikeys_prsd & PRSD_M) != 0)
 		{
-			if ((g_plr.uishown & SHOW_MAP) != 0 && g_ui_anim.ianim == 0)
+			if ((g_ui_anim.uishown & SHOWN_MAP) == 0 && g_ui_anim.ianim == 0)//g_ui_anim.ianim == 0)
 			{
 				g_ui_anim.clstart = clock();
 				g_ui_anim.istart_x = g_game.iscr_width05;
 				g_ui_anim.istart_y = g_game.iscr_height05;
-				g_ui_anim.istop_x = g_game.iscr_width05 - 200;
-				g_ui_anim.istop_y = g_game.iscr_height05 - 200;
-				g_ui_anim.istop_msec = 5000;
+				g_ui_anim.istop_x = g_game.iscr_width05;
+				g_ui_anim.istop_y = g_game.iscr_height05;
+				g_ui_anim.istop_msec = 200;
 				g_ui_anim.fstart_scale = 0.1;
 				g_ui_anim.fstop_scale = 1.0;
 				g_ui_anim.fstart_opac = 0.1;
 				g_ui_anim.fstop_opac = 0.9;
 				g_ui_anim.ianim = 1;
-				g_ui_anim.*tex_anim = &g_tex.tex_map_ui;
-				ft_ui_move_lt(&g_tex.tex_map_ui);
+				g_ui_anim.tex_anim = &g_tex.tex_map_ui;
+				ft_ui_move();
 			}
-			else if (g_ui_anim.ianim == 1 && g_ui_anim.istop_msec > 0)
-				ft_ui_move_lt(&g_tex.tex_map_ui);
-			else
+			else if ((g_ui_anim.uishown & SHOWN_MAP) == 0 && g_ui_anim.ianim == 1)//&& g_ui_anim.ianim == 1)
+				ft_ui_move();
+			else if ((g_ui_anim.uishown & SHOWN_MAP) != 0)
 				ft_put_scaled_opac_img_to_win(&g_game.win_buf, &g_game, \
-					&g_tex.tex_map_ui, g_game.iscr_width05 - 200, g_game.iscr_height05 - 200);
+					&g_tex.tex_map_ui, g_game.iscr_width05, g_game.iscr_height05);
 			//ft_draw_ui_map();
 		}
+		//else
+//			g_ui_anim.uishown -= SHOWN_MAP;
 	}
 	ft_draw_vignette();//&g_game.win_buf, &g_game);
 

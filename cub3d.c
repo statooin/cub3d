@@ -335,36 +335,6 @@ int	main(void)
 
 	ft_load_maps();
 
-/*
-	g_math.map_floor = malloc(sizeof(char*) * 27);
-	 g_math.map_floor[0] = ft_strdup("                                            ");
-	 g_math.map_floor[1] = ft_strdup("                                            ");
-	 g_math.map_floor[2] = ft_strdup("   12 12   1212122      2   12121212121212  ");
-	 g_math.map_floor[3] = ft_strdup("  12121212 122  1212  12121212121212121212  ");
-	 g_math.map_floor[4] = ft_strdup("  12122 1212122  1212122 12122 1212122  1   ");
-	 g_math.map_floor[5] = ft_strdup("    12 1212 1212    122   12 1212 1212      ");
-	 g_math.map_floor[6] = ft_strdup("  1212122    121212  2  1212122    121212   ");
-	 g_math.map_floor[7] = ft_strdup("  12122         1212121212122         1212  ");
-	 g_math.map_floor[8] = ft_strdup("   12             12     12             12  ");
-	 g_math.map_floor[9] = ft_strdup("    12            12      12            12  ");
-	g_math.map_floor[10] = ft_strdup("    122    2       12     122    2          ");
-	g_math.map_floor[11] = ft_strdup("   122  121212      2     12  121212        ");
-	g_math.map_floor[12] = ft_strdup("  122  12121212          122  1212122       ");
-	g_math.map_floor[13] = ft_strdup("  12121212 12122        12121212 12122      ");
-	g_math.map_floor[14] = ft_strdup("   1212 12122 122 2      1212 12122 122 2   ");
-	g_math.map_floor[15] = ft_strdup("    121212122  122        121212122  122    ");
-	g_math.map_floor[16] = ft_strdup("     1212121212122         1212121212122    ");
-	g_math.map_floor[17] = ft_strdup("      1212   12122          1212   12122    ");
-	g_math.map_floor[18] = ft_strdup("      122    1212           122    1212     ");
-	g_math.map_floor[19] = ft_strdup("     12122   122           12122   122      ");
-	g_math.map_floor[20] = ft_strdup("   121212121212          121212121212       ");
-	g_math.map_floor[21] = ft_strdup("  12 121212 122         12 121212 122       ");
-	g_math.map_floor[22] = ft_strdup("  121212121212          121212121212        ");
-	g_math.map_floor[23] = ft_strdup("    121212122             121212122         ");
-	g_math.map_floor[24] = ft_strdup("     121212                121212           ");
-	g_math.map_floor[25] = ft_strdup("                                            ");
-	g_math.map_floor[26] = ft_strdup("                                            ");
-*/
 	g_plr.fplr_z0 = -0.6f; //player's "height"
 	g_plr.fplr_zhead = 1.0f; // !! ?? how to crouch ctrl
 	g_consts.ffov = 3.14159 / 3.2; // /8 !! need fix with / 3.0  // field of view 15.0-20.0 this id sniper zoom!! )))

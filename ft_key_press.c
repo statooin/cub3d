@@ -42,7 +42,10 @@ int	ft_key_press(int ikey)
 	if (ikey == KEY_M)
 	{
 		if ((g_plr.uikeys_prsd & PRSD_M) != 0)
+		{
 			g_plr.uikeys_prsd -= PRSD_M;
+			g_ui_anim.uishown -= SHOWN_MAP;
+		}
 		else
 			g_plr.uikeys_prsd |= PRSD_M;
 	}
