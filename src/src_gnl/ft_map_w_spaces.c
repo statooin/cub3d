@@ -6,7 +6,7 @@
 /*   By: bjebedia <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/08 20:31:51 by bjebedia          #+#    #+#             */
-/*   Updated: 2020/09/08 20:31:53 by bjebedia         ###   ########.fr       */
+/*   Updated: 2020/09/15 16:23:48 by bjebedia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int	ft_map_w_spaces(int line_len, t_check *checks)
 		i++;
 	}
 	close(fd);
-	ft_forbid_symbols(map);
+	ft_forbid_symbols(map, checks);
 	ft_map_borders(map, checks);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: bjebedia <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/08 20:28:49 by bjebedia          #+#    #+#             */
-/*   Updated: 2020/09/09 17:49:18 by bjebedia         ###   ########.fr       */
+/*   Updated: 2020/09/15 16:26:48 by bjebedia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,12 +64,12 @@ int		ft_search_f(t_check *checks, t_param *param, char *line);
 int		ft_search_c(t_check *checks, t_param *param, char *line);
 int		ft_longest_mapline(t_check *checks);
 int		ft_map_borders(char **map, t_check *checks);
-int		ft_forbid_symbols(char **map);
+int		ft_forbid_symbols(char **map, t_check *checks);
 int		ft_map_w_spaces(int line_len, t_check *checks);
 int		ft_map(char *line, t_check *checks);
 int		ft_check_if_all_found(t_check *cheks);
 int		ft_search_map(t_check *checks);
 int		ft_what_type(t_check *checks, t_param *param);
-int	ft_valid_resolution(int *width, int *height);
+int		ft_valid_resolution(int *width, int *height);
 
 #endif

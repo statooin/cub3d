@@ -69,38 +69,6 @@ void	ft_anim_ui(clock_t *clstart, int istart_x, int istart_y, int istop_x, int i
 }
 */
 
-void	ft_ui_move_lt()
-{
-	static int	imsec;
-	static int	x;
-	static int	y;
-
-	if (imsec > g_ui_anim.istop_msec)
-	{
-		//g_plr.iplay_ui = 0;
-		imsec = 0;
-		//g_ui_anim.istop_msec = 0;
-		g_ui_anim.ianim = 0;
-		g_ui_anim.uishown |= SHOWN_MAP;
-		g_ui_anim.tex_anim = NULL;
-	}
-	else
-	{
-		imsec = (clock() - g_ui_anim.clstart) * 1000 / CLOCKS_PER_SEC;
-		x = g_ui_anim.istart_x + (g_ui_anim.istop_x - g_ui_anim.istart_x) * imsec / g_ui_anim.istop_msec;
-		y = g_ui_anim.istart_y + (g_ui_anim.istop_y - g_ui_anim.istart_y) * imsec / g_ui_anim.istop_msec;
-		g_ui_anim.tex_anim->opacity = g_ui_anim.fstart_opac + (g_ui_anim.fstop_opac - g_ui_anim.fstart_opac) * imsec / g_ui_anim.istop_msec;
-		g_ui_anim.tex_anim->scale = g_ui_anim.fstart_scale + (g_ui_anim.fstop_scale - g_ui_anim.fstart_scale) * imsec / g_ui_anim.istop_msec;
-
-		if (g_ui_anim.tex_anim->opacity < 1)
-			ft_put_scaled_opac_img_lt_to_win (&g_game.win_buf, &g_game, \
-				g_ui_anim.tex_anim , x, y);
-		else
-			ft_put_scaled_img_lt_to_win(&g_game.win_buf, &g_game, \
-				g_ui_anim.tex_anim , x, y);
-	}
-}
-
 void	ft_ui_move()
 {
 	static int	imsec;
@@ -116,7 +84,6 @@ void	ft_ui_move()
 		//g_ui_anim.istop_msec = 0;
 		g_ui_anim.ianim = 0;
 		g_ui_anim.uishown |= SHOWN_MAP;
-		g_ui_anim.tex_anim = NULL;
 	}
 	else
 	{
@@ -127,7 +94,7 @@ void	ft_ui_move()
 		g_ui_anim.tex_anim->scale = g_ui_anim.fstart_scale + (g_ui_anim.fstop_scale - g_ui_anim.fstart_scale) * imsec / g_ui_anim.istop_msec;
 		g_ui_anim.tex_anim->step = 1 / g_ui_anim.tex_anim->scale;
 		if (g_ui_anim.tex_anim->opacity < 1)
-			ft_put_scaled_opac_img_to_win (&g_game.win_buf, &g_game, \
+			ft_put_scaled_opac_img_to_win(&g_game.win_buf, &g_game, \
 				g_ui_anim.tex_anim , x, y);
 		else
 			ft_put_scaled_img_to_win(&g_game.win_buf, &g_game, \
@@ -136,15 +103,50 @@ void	ft_ui_move()
 }
 
 
+void	ft_ui_move_lt()
+{
+	static int	imsec;
+	static int	x;
+	static int	y;
+
+	if (imsec > g_ui_anim.istop_msec)
+	{
+		if (g_ui_anim.tex_anim->opacity < 1)
+			ft_put_scaled_opac_img_lt_to_win(&g_game.win_buf, &g_game, \
+				g_ui_anim.tex_anim , x, y);
+		else
+			ft_put_scaled_img_lt_to_win(&g_game.win_buf, &g_game, \
+				g_ui_anim.tex_anim , x, y);
+		imsec = 0;
+		g_ui_anim.ianim = 0;
+		g_ui_anim.uishown |= SHOWN_MAP;
+	}
+	else
+	{
+		imsec = (clock() - g_ui_anim.clstart) * 1000 / CLOCKS_PER_SEC;
+		x = g_ui_anim.istart_x + (g_ui_anim.istop_x - g_ui_anim.istart_x) * imsec / g_ui_anim.istop_msec;
+		y = g_ui_anim.istart_y + (g_ui_anim.istop_y - g_ui_anim.istart_y) * imsec / g_ui_anim.istop_msec;
+		g_ui_anim.tex_anim->opacity = g_ui_anim.fstart_opac + (g_ui_anim.fstop_opac - g_ui_anim.fstart_opac) * imsec / g_ui_anim.istop_msec;
+		g_ui_anim.tex_anim->scale = g_ui_anim.fstart_scale + (g_ui_anim.fstop_scale - g_ui_anim.fstart_scale) * imsec / g_ui_anim.istop_msec;
+		g_ui_anim.tex_anim->step = 1 / g_ui_anim.tex_anim->scale;
+		if (g_ui_anim.tex_anim->opacity < 1)
+			ft_put_scaled_opac_img_lt_to_win(&g_game.win_buf, &g_game, \
+				g_ui_anim.tex_anim , x, y);
+		else
+			ft_put_scaled_img_lt_to_win(&g_game.win_buf, &g_game, \
+				g_ui_anim.tex_anim , x, y);
+	}
+}
+
 void	ft_show_ui_map()
 {
 	if ((g_ui_anim.uishown & SHOWN_MAP) == 0 && g_ui_anim.ianim == 0)//g_ui_anim.ianim == 0)
 	{
 		g_ui_anim.clstart = clock();
 		g_ui_anim.istart_x = g_game.iscr_width05;
-		g_ui_anim.istart_y = g_game.iscr_height05 + 200;
-		g_ui_anim.istop_x = g_game.iscr_width05;
-		g_ui_anim.istop_y = g_game.iscr_height05;
+		g_ui_anim.istop_x = g_game.iscr_width05 / 2;
+		g_ui_anim.istart_y = g_game.iscr_height05 * 1.5;
+		g_ui_anim.istop_y = g_game.iscr_height05 / 2;
 		g_ui_anim.istop_msec = 100;
 		g_ui_anim.fstart_scale = 0.1;
 		g_ui_anim.fstop_scale = 1.0;
@@ -152,15 +154,15 @@ void	ft_show_ui_map()
 		g_ui_anim.fstop_opac = 0.9;
 		g_ui_anim.ianim = 1;
 		g_ui_anim.tex_anim = &g_tex.tex_map_ui;
-		ft_ui_move();
+		ft_ui_move_lt();
 	}
 	else if ((g_ui_anim.uishown & SHOWN_MAP) == 0 && g_ui_anim.ianim == 1)//&& g_ui_anim.ianim == 1)
-		ft_ui_move();
+		ft_ui_move_lt();
 	else if ((g_ui_anim.uishown & SHOWN_MAP) != 0)
-		ft_put_scaled_opac_img_to_win(&g_game.win_buf, &g_game, \
-			&g_tex.tex_map_ui, g_game.iscr_width05, g_game.iscr_height05);
-	//int					g_math.imap_h;
-	//int					g_math.imap_w;
+	{
+		/* ft_put_scaled_opac_img_lt_to_win(&g_game.win_buf, &g_game, \
+			&g_tex.tex_map_ui, g_game.iscr_width05 / 2, g_game.iscr_height05 / 2); */
+	}
 }
 
 
