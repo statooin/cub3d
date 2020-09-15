@@ -1,25 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_cub_validation.c                                :+:      :+:    :+:   */
+/*   ft_valid_resolution.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bjebedia <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/09/08 20:36:25 by bjebedia          #+#    #+#             */
-/*   Updated: 2020/09/09 17:33:16 by bjebedia         ###   ########.fr       */
+/*   Created: 2020/09/14 18:46:50 by bjebedia          #+#    #+#             */
+/*   Updated: 2020/09/15 14:40:40 by bjebedia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "read_cub.h"
 
-int	ft_cub_validation(void)
-//int	ft_cub_validation(t_game *g_game)
+int	ft_valid_resolution(int *width, int *height)
 {
-	t_check	checks;
-	t_param	param;
+	int	w;
+	int	h;
 
-	ft_init_structs(&checks, &param);
-	ft_what_type(&checks, &param);
-	ft_valid_resolution(&g_game.iscr_width, &g_game.iscr_height);
-	return (0);
+	w = 0;
+	h = 0;
+	mlx_get_screen_size(g_game.mlx, &w, &h);
+	printf("!NEW INFO |%d|%d|\n", w, h);
+	if (w < *width)
+		*width = w;
+	if (h < *height)
+		*height = h;
+	printf("!NEW INFO |%d|%d|\n", *width, *height);
+	return 0;
 }

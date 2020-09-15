@@ -235,28 +235,30 @@ ft_pause(1100);
 
 void	ft_load_maps()
 {
+	//int					g_math.imap_h;
+	//int					g_math.imap_w;
 	int	i;
 	//int	j;
 	//int	ilen;
-	int	icount;
+	//int	icount;
 	char  *line;
 	int   fd;
 
-	icount = 0;
+	g_math.imap_h = 0;
 	fd = open("maps/map.map", O_RDONLY);
 	while (get_next_line(fd, &line) > 0)
 	{
 		free(line);
-		icount++;
+		g_math.imap_h++;
 	}
 	free(line);
 	close(fd);
 
-	g_math.map = malloc(sizeof(char*) * icount);
+	g_math.map = malloc(sizeof(char*) * g_math.imap_h);
 
 	i = 0;
 	fd = open("maps/map.map", O_RDONLY);
-	while (i < icount)
+	while (i < g_math.imap_h)
 	{
 		get_next_line(fd, &g_math.map[i]);
 		printf("|%s\n", g_math.map[i]);
@@ -264,12 +266,13 @@ void	ft_load_maps()
 	}
 	close(fd);
 
-	g_math.map_floor = malloc(sizeof(char*) * icount);
+	g_math.imap_w = ft_strlen(g_math.map[0]);
+	g_math.map_floor = malloc(sizeof(char*) * g_math.imap_h);
 
 	//ilen = ft_strlen(g_math.map[0]);
 	i = 0;
 	fd = open("maps/floor.map", O_RDONLY);
-	while (i < icount)
+	while (i < g_math.imap_h)
 	{
 		get_next_line(fd, &g_math.map_floor[i]);
 		//j = -1;
@@ -286,6 +289,8 @@ int	main(void)
 {
 	int	i_load_x;
 
+	g_game.mlx = mlx_init();
+
 	ft_cub_validation();
 
 	ft_load_snd_steps();
@@ -298,7 +303,7 @@ int	main(void)
 	g_game.iscr_width05 = g_game.iscr_width / 2;
 	g_game.iscr_height05 = g_game.iscr_height / 2;
 
-	g_game.mlx = mlx_init();
+
 	g_game.mlx_win = mlx_new_window(g_game.mlx, g_game.iscr_width, g_game.iscr_height, "Amada system - Anjea's moon");
 
 	g_game.win_buf0.ptr = mlx_new_image(g_game.mlx, g_game.iscr_width, g_game.iscr_height);

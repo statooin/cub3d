@@ -109,6 +109,8 @@ void	ft_ui_move()
 
 	if (imsec > g_ui_anim.istop_msec)
 	{
+		ft_put_scaled_opac_img_to_win (&g_game.win_buf, &g_game, \
+			g_ui_anim.tex_anim , x, y);
 		//g_plr.iplay_ui = 0;
 		imsec = 0;
 		//g_ui_anim.istop_msec = 0;
@@ -133,13 +135,34 @@ void	ft_ui_move()
 	}
 }
 
-/*
-void	ft_draw_ui_map()
+
+void	ft_show_ui_map()
 {
-	ft_put_scaled_opac_img_to_win(&g_game.win_buf, &g_game, \
-		&g_tex.tex_map_ui, g_game.iscr_width05, g_game.iscr_height05 + 100);
+	if ((g_ui_anim.uishown & SHOWN_MAP) == 0 && g_ui_anim.ianim == 0)//g_ui_anim.ianim == 0)
+	{
+		g_ui_anim.clstart = clock();
+		g_ui_anim.istart_x = g_game.iscr_width05;
+		g_ui_anim.istart_y = g_game.iscr_height05 + 200;
+		g_ui_anim.istop_x = g_game.iscr_width05;
+		g_ui_anim.istop_y = g_game.iscr_height05;
+		g_ui_anim.istop_msec = 100;
+		g_ui_anim.fstart_scale = 0.1;
+		g_ui_anim.fstop_scale = 1.0;
+		g_ui_anim.fstart_opac = 0.1;
+		g_ui_anim.fstop_opac = 0.9;
+		g_ui_anim.ianim = 1;
+		g_ui_anim.tex_anim = &g_tex.tex_map_ui;
+		ft_ui_move();
+	}
+	else if ((g_ui_anim.uishown & SHOWN_MAP) == 0 && g_ui_anim.ianim == 1)//&& g_ui_anim.ianim == 1)
+		ft_ui_move();
+	else if ((g_ui_anim.uishown & SHOWN_MAP) != 0)
+		ft_put_scaled_opac_img_to_win(&g_game.win_buf, &g_game, \
+			&g_tex.tex_map_ui, g_game.iscr_width05, g_game.iscr_height05);
+	//int					g_math.imap_h;
+	//int					g_math.imap_w;
 }
-*/
+
 
 int	ft_draw_world(void)
 {
@@ -187,30 +210,7 @@ int	ft_draw_world(void)
 			//ft_draw_weapon();
 		}
 		if ((g_plr.uikeys_prsd & PRSD_M) != 0)
-		{
-			if ((g_ui_anim.uishown & SHOWN_MAP) == 0 && g_ui_anim.ianim == 0)//g_ui_anim.ianim == 0)
-			{
-				g_ui_anim.clstart = clock();
-				g_ui_anim.istart_x = g_game.iscr_width05;
-				g_ui_anim.istart_y = g_game.iscr_height05;
-				g_ui_anim.istop_x = g_game.iscr_width05;
-				g_ui_anim.istop_y = g_game.iscr_height05;
-				g_ui_anim.istop_msec = 200;
-				g_ui_anim.fstart_scale = 0.1;
-				g_ui_anim.fstop_scale = 1.0;
-				g_ui_anim.fstart_opac = 0.1;
-				g_ui_anim.fstop_opac = 0.9;
-				g_ui_anim.ianim = 1;
-				g_ui_anim.tex_anim = &g_tex.tex_map_ui;
-				ft_ui_move();
-			}
-			else if ((g_ui_anim.uishown & SHOWN_MAP) == 0 && g_ui_anim.ianim == 1)//&& g_ui_anim.ianim == 1)
-				ft_ui_move();
-			else if ((g_ui_anim.uishown & SHOWN_MAP) != 0)
-				ft_put_scaled_opac_img_to_win(&g_game.win_buf, &g_game, \
-					&g_tex.tex_map_ui, g_game.iscr_width05, g_game.iscr_height05);
-			//ft_draw_ui_map();
-		}
+			ft_show_ui_map();
 		//else
 //			g_ui_anim.uishown -= SHOWN_MAP;
 	}

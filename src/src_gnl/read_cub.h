@@ -70,5 +70,6 @@ int		ft_map(char *line, t_check *checks);
 int		ft_check_if_all_found(t_check *cheks);
 int		ft_search_map(t_check *checks);
 int		ft_what_type(t_check *checks, t_param *param);
+int	ft_valid_resolution(int *width, int *height);
 
 #endif

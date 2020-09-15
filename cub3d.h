@@ -186,6 +186,8 @@ typedef struct			s_ui_anim
 
 typedef struct			s_math
 {
+	int					imap_h;
+	int					imap_w;
 	char				**map;
 	int					*ibottom_sky;
 	char				**map_floor;
