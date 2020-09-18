@@ -56,12 +56,28 @@ void	ft_draw_walls(void)
 			{
 				if (g_math.map[itest_y][itest_x] >= 'a')
 				{
-					obj[i].ctype = g_math.map[itest_y][itest_x]; // number type of enemy
-					obj[i].fdist = fdist_to_wall;
-					obj[i].itest_x = itest_x;
-					obj[i].ftest_x = g_math.ftest_x;
-					obj[i].ftest_y = g_math.ftest_y;
-					i++;
+					while (itest_x_old == (int)(g_math.ftest_x) && itest_y_old == (int)(g_math.ftest_y)) //next cell
+					{
+						if (g_math.enemy[g_math.map[itest_y][itest_x] - 'a'][(int)(30 * (g_math.ftest_y - (int)g_math.ftest_y))][(int)(30 * (g_math.ftest_x - (int)g_math.ftest_x))] == '+')
+						{
+							obj[i].ctype = g_math.map[itest_y][itest_x]; // number type of enemy
+							obj[i].fdist = fdist_to_wall;
+							obj[i].itest_x = itest_x;
+							obj[i].ftest_x = g_math.ftest_x;
+							obj[i].ftest_y = g_math.ftest_y;
+							i++;
+							break;
+						}
+						fdist_to_wall += g_consts.fstep_check; //!!!!! make adaptive per distance from 0.01 to 0.06
+						g_math.ftest_x = g_math.ftest_x + g_consts.fsinf_ang_step; // this is step inside cell
+						g_math.ftest_y = g_math.ftest_y + g_consts.fcosf_ang_step;
+					}
+					while (itest_x_old == (int)(g_math.ftest_x) && itest_y_old == (int)(g_math.ftest_y)) //next cell
+					{
+						fdist_to_wall += g_consts.fstep_check; //!!!!! make adaptive per distance from 0.01 to 0.06
+						g_math.ftest_x = g_math.ftest_x + g_consts.fsinf_ang_step; // this is step inside cell
+						g_math.ftest_y = g_math.ftest_y + g_consts.fcosf_ang_step;
+					}
 				}
 				else if (g_math.map[itest_y][itest_x] >= '1' && g_tex.tex_wall[g_math.map[itest_y][itest_x] - '0'].iprior >= ibiggest)
 				{

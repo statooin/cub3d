@@ -19,7 +19,6 @@ void	ft_left_enemies_prescan(void)
 	static int		itest_y;
 	static float	fdist_to_wall;
 
-	ft_reset_enemies();
 	g_math.iray_x = -400;
 	fray_ang = g_plr.fplr_a + g_consts.ffov05 - g_math.iray_x * g_consts.fray_ang_step;
 	while (g_math.iray_x < 0)
@@ -31,7 +30,7 @@ void	ft_left_enemies_prescan(void)
 		itest_y = (int)(g_math.ftest_y);
 		g_consts.fsinf_ang_step = sinf(fray_ang) * 0.09f;
 		g_consts.fcosf_ang_step = cosf(fray_ang) * 0.09f;
-		while (g_math.map[itest_y][itest_x] != 'W')
+		while (g_math.map[itest_y][itest_x] != '#')
 		{
 			fdist_to_wall += 0.09f;
 			g_math.ftest_x = g_math.ftest_x - g_consts.fsinf_ang_step;

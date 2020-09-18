@@ -31,7 +31,8 @@ void	ft_draw_floor(void)
 	{
 		fsinf_a = sinf(fray_ang);
 		fcosf_a = cosf(fray_ang);
-		idraw_y = g_game.iscr_height_m1;
+		idraw_y = g_game.iscr_height_m1 + g_game.iscr_height05;// - g_plr.iplr_z;
+		//idraw_y = g_game.iscr_height_m1;
 		while (idraw_y > g_game.iscr_height05)
 		{
 			ffloor_tilex = g_plr.fplr_x - fsinf_a * g_math.fdist_to_all_tiles[idraw_y][g_math.iray_x];

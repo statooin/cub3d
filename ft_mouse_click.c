@@ -14,6 +14,8 @@
 
 int	ft_mouse_click(int ikey)
 {
+	if (g_plr.iplay_cut_scene != 0)
+		return (1);
 	if (ikey == 1)
 	{
 		if ((g_plr.uikeys_prsd & PRSD_H) == 0)

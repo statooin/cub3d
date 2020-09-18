@@ -20,7 +20,7 @@ void	ft_init_armor(void)
 	i = 0;
 	g_plr.iplr_armor = 18;
 	g_tex.tex_armor = malloc(sizeof(t_img_n_tex) * 19);
-	ctex_name = ft_strdup("");
+	ctex_name = NULL;
 	while (i <= 18)
 	{
 		ft_strjoin_f("textures/ui/armor/armor_", ft_itoa(i), &ctex_name);

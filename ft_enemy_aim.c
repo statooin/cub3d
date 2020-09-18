@@ -22,33 +22,37 @@ int	ft_enemy_aim(void)
 	g_math.ienemy_n = 0;
 	while (g_math.ienemy_n < 3)
 	{
-		if ((clock() - g_enemies[g_math.ienemy_n].cl_shoot) * 1000 / CLOCKS_PER_SEC > 300)
+		if (g_enemies[g_math.ienemy_n].ihealth > 0 )
 		{
-			g_enemies[g_math.ienemy_n].cl_shoot = clock();
-			fshot_x = (float)g_enemies[g_math.ienemy_n].ienemy_x;
-			fshot_y = (float)g_enemies[g_math.ienemy_n].ienemy_y;
-			fstep_y = (g_plr.fplr_y - (float)g_enemies[g_math.ienemy_n].ienemy_y + 0.5) / 30;
-			fstep_x = (g_plr.fplr_x - (float)g_enemies[g_math.ienemy_n].ienemy_x + 0.5) / 30;
-			while ((int)fshot_x != (int)g_plr.fplr_x && (int)fshot_y != (int)g_plr.fplr_y)
+			if ((clock() - g_enemies[g_math.ienemy_n].cl_shoot) * 1000 / CLOCKS_PER_SEC > 300)
 			{
-				if (g_math.map[(int)fshot_y][(int)fshot_x] > ' ' && g_math.map[(int)fshot_y][(int)fshot_x] < 'a')
+				g_enemies[g_math.ienemy_n].cl_shoot = clock();
+				fshot_x = (float)g_enemies[g_math.ienemy_n].ienemy_x;
+				fshot_y = (float)g_enemies[g_math.ienemy_n].ienemy_y;
+				fstep_x = (g_plr.fplr_x - (float)g_enemies[g_math.ienemy_n].ienemy_x) / 200.0f;
+				fstep_y = (g_plr.fplr_y - (float)g_enemies[g_math.ienemy_n].ienemy_y) / 200.0f;
+				while ((int)fshot_x != (int)g_plr.fplr_x && (int)fshot_y != (int)g_plr.fplr_y)
 				{
-					return (0);
+					if (g_math.map[(int)fshot_y][(int)fshot_x] > ' ' && g_math.map[(int)fshot_y][(int)fshot_x] < 'a')
+					{
+						g_enemies[g_math.ienemy_n].iaimed = 0;
+						return (0);
+					}
+					fshot_x += fstep_x;
+					fshot_y += fstep_y;
 				}
-				fshot_x += fstep_y;
-				fshot_y += fstep_x;
+				//if (iGot == 1)
+				//{
+				if (g_enemies[g_math.ienemy_n].iaimed < 8)
+					g_enemies[g_math.ienemy_n].iaimed++;
+				else
+				{
+					ft_enemy_shoot();
+					g_enemies[g_math.ienemy_n].iaimed = 0;
+				}
+				//write(1, "got", 3);
+				//}
 			}
-			//if (iGot == 1)
-			//{
-			if (g_enemies[g_math.ienemy_n].iaimed < 2)
-				g_enemies[g_math.ienemy_n].iaimed++;
-			else if (g_enemies[g_math.ienemy_n].iaimed == 2)
-			{
-				ft_enemy_shoot();
-				g_enemies[g_math.ienemy_n].iaimed = 0;
-			}
-			//write(1, "got", 3);
-			//}
 		}
 		g_math.ienemy_n++;
 	}

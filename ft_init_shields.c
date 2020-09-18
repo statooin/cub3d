@@ -20,7 +20,7 @@ void	ft_init_shields(void)
 	i = 0;
 	g_plr.iplr_armor = 28;
 	g_tex.tex_shield = malloc(sizeof(t_img_n_tex) * 28);
-	ctex_name = ft_strdup("");
+	ctex_name = NULL;
 	while (i <= 27)
 	{
 		ft_strjoin_f("textures/ui/shields/shield_", ft_itoa(i), &ctex_name);

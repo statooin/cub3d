@@ -12,12 +12,36 @@
 
 #include "cub3d.h"
 
+void	ft_m8_reload(void)
+{
+	g_plr.iammo = 45;
+}
+
 void	ft_player_shot(void)
 {
-	//PRSD_LC
-	//if (g_math.ishot > 0)
-	//{
-		ft_put_scaled_opac_img_to_win(&g_game.win_buf, &g_game, &g_tex.tex_muz_00, g_game.iscr_width05, g_game.iscr_height05);
+	static int	pid;
+
+	ft_put_scaled_opac_img_to_win(&g_game.win_buf, &g_game, &g_tex.tex_muz_00, g_game.iscr_width05, g_game.iscr_height05);
+	if (g_plr.iammo > 0)
+	{
+		pid = fork();
+		if (pid == 0)
+		{
+			system("mpg123 -q -f 22000 sound/m8_burst.mp3");
+			exit(0);
+		}
 		g_math.ishot--;
-	//}
+		g_plr.iammo -= 3;
+	}
+	else
+	{
+		pid = fork();
+		if (pid == 0)
+		{
+			system("mpg123 -q -f 22000 sound/m8_empty.mp3");
+			system("mpg123 -q -f 22000 sound/m8_reload.mp3");
+			exit(0);
+		}
+		ft_m8_reload();
+	}
 }

@@ -79,15 +79,14 @@ void	ft_ui_move()
 	{
 		ft_put_scaled_opac_img_to_win (&g_game.win_buf, &g_game, \
 			g_ui_anim.tex_anim , x, y);
-		//g_plr.iplay_ui = 0;
 		imsec = 0;
-		//g_ui_anim.istop_msec = 0;
 		g_ui_anim.ianim = 0;
 		g_ui_anim.uishown |= SHOWN_MAP;
 	}
 	else
 	{
-		imsec = (clock() - g_ui_anim.clstart) * 1000 / CLOCKS_PER_SEC;
+		if ((imsec = (clock() - g_ui_anim.clstart) * 1000 / CLOCKS_PER_SEC) > g_ui_anim.istop_msec)
+			imsec = g_ui_anim.istop_msec;
 		x = g_ui_anim.istart_x + (g_ui_anim.istop_x - g_ui_anim.istart_x) * imsec / g_ui_anim.istop_msec;
 		y = g_ui_anim.istart_y + (g_ui_anim.istop_y - g_ui_anim.istart_y) * imsec / g_ui_anim.istop_msec;
 		g_ui_anim.tex_anim->opacity = g_ui_anim.fstart_opac + (g_ui_anim.fstop_opac - g_ui_anim.fstart_opac) * imsec / g_ui_anim.istop_msec;
@@ -109,7 +108,7 @@ void	ft_ui_move_lt()
 	static int	x;
 	static int	y;
 
-	if (imsec > g_ui_anim.istop_msec)
+	if (imsec >= g_ui_anim.istop_msec)
 	{
 		if (g_ui_anim.tex_anim->opacity < 1)
 			ft_put_scaled_opac_img_lt_to_win(&g_game.win_buf, &g_game, \
@@ -123,7 +122,8 @@ void	ft_ui_move_lt()
 	}
 	else
 	{
-		imsec = (clock() - g_ui_anim.clstart) * 1000 / CLOCKS_PER_SEC;
+		if ((imsec = (clock() - g_ui_anim.clstart) * 1000 / CLOCKS_PER_SEC) > g_ui_anim.istop_msec)
+			imsec = g_ui_anim.istop_msec;
 		x = g_ui_anim.istart_x + (g_ui_anim.istop_x - g_ui_anim.istart_x) * imsec / g_ui_anim.istop_msec;
 		y = g_ui_anim.istart_y + (g_ui_anim.istop_y - g_ui_anim.istart_y) * imsec / g_ui_anim.istop_msec;
 		g_ui_anim.tex_anim->opacity = g_ui_anim.fstart_opac + (g_ui_anim.fstop_opac - g_ui_anim.fstart_opac) * imsec / g_ui_anim.istop_msec;
@@ -138,18 +138,36 @@ void	ft_ui_move_lt()
 	}
 }
 
+void	ft_show_ui_map_pl()
+{
+	static int	idir;
+	static int	ix;
+	static int	iy;
+
+	idir = (int)(g_plr.fplr_a / PI2 * 8) % 8;
+	//printf("idir = %d\n", idir);
+	idir = (idir >= 0) ? idir : 8 + idir;
+	//printf("idir = %d\n", idir);
+ix = g_game.iscr_width05 / 3 + (float)g_tex.tex_map_ui.width * g_plr.fplr_x / g_math.imap_w;
+iy = g_game.iscr_height05 / 3 + (float)g_tex.tex_map_ui.height * g_plr.fplr_y / g_math.imap_h;
+
+
+		ft_put_scaled_img_to_win(&g_game.win_buf, &g_game, \
+			&g_tex.tex_arr[idir], ix, iy);
+}
+
 void	ft_show_ui_map()
 {
 	if ((g_ui_anim.uishown & SHOWN_MAP) == 0 && g_ui_anim.ianim == 0)//g_ui_anim.ianim == 0)
 	{
 		g_ui_anim.clstart = clock();
 		g_ui_anim.istart_x = g_game.iscr_width05;
-		g_ui_anim.istop_x = g_game.iscr_width05 / 2;
+		g_ui_anim.istop_x = g_game.iscr_width05 / 3;
 		g_ui_anim.istart_y = g_game.iscr_height05 * 1.5;
-		g_ui_anim.istop_y = g_game.iscr_height05 / 2;
+		g_ui_anim.istop_y = g_game.iscr_height05 / 3;
 		g_ui_anim.istop_msec = 100;
 		g_ui_anim.fstart_scale = 0.1;
-		g_ui_anim.fstop_scale = 1.0;
+		g_ui_anim.fstop_scale = 1.0; ///!!! re do this
 		g_ui_anim.fstart_opac = 0.1;
 		g_ui_anim.fstop_opac = 0.9;
 		g_ui_anim.ianim = 1;
@@ -160,8 +178,9 @@ void	ft_show_ui_map()
 		ft_ui_move_lt();
 	else if ((g_ui_anim.uishown & SHOWN_MAP) != 0)
 	{
-		/* ft_put_scaled_opac_img_lt_to_win(&g_game.win_buf, &g_game, \
-			&g_tex.tex_map_ui, g_game.iscr_width05 / 2, g_game.iscr_height05 / 2); */
+		ft_put_scaled_opac_img_lt_to_win(&g_game.win_buf, &g_game, \
+			&g_tex.tex_map_ui, g_game.iscr_width05 / 3, g_game.iscr_height05 / 3);
+		ft_show_ui_map_pl();
 	}
 }
 
@@ -169,7 +188,6 @@ void	ft_show_ui_map()
 int	ft_draw_world(void)
 {
 	static int buf_num;
-	//static int	i;
 
 	static int	itime;
 	itime++;
@@ -180,20 +198,21 @@ int	ft_draw_world(void)
 		itime = 0;
 	}
 
-	//ft_key_actions();
 	ft_draw_floor();
 	//ft_draw_simple_color_floor();
 	if (g_math.ienemies_active == 1)
 	{
+		ft_enemy_move();
+		ft_reset_enemies();
 		ft_left_enemies_prescan();
 		//ft_enemy_act();
-		ft_enemy_move();
-		ft_enemy_aim(); //!! re do this - flash will be not visible!!
 	}
 
 	ft_draw_walls();
 	//ft_draw_simple_color_sky();
 	ft_draw_skybox();
+	if (g_math.ienemies_active == 1)
+		ft_enemy_aim();
 	//ft_draw_hp(1);
 
 	if (g_plr.iplay_cut_scene != 0)
@@ -203,7 +222,16 @@ int	ft_draw_world(void)
 	else
 	{
 		ft_key_actions();
-		if ((g_plr.uikeys_prsd & PRSD_H) != 0)
+		if ((g_plr.uikeys_prsd & PRSD_M) != 0)
+		{
+			//ft_show_left_hand();
+			ft_show_ui_map();
+		}
+		if ((g_plr.uikeys_prsd & PRSD_M) != 0 && (g_plr.uikeys_prsd & PRSD_H) != 0)
+		{
+			ft_shields();
+		}
+		else if ((g_plr.uikeys_prsd & PRSD_M) == 0 && (g_plr.uikeys_prsd & PRSD_H) != 0)
 		{
 			ft_draw_crosshair();
 			ft_shields();
@@ -211,10 +239,6 @@ int	ft_draw_world(void)
 				ft_player_shot();
 			//ft_draw_weapon();
 		}
-		if ((g_plr.uikeys_prsd & PRSD_M) != 0)
-			ft_show_ui_map();
-		//else
-//			g_ui_anim.uishown -= SHOWN_MAP;
 	}
 	ft_draw_vignette();//&g_game.win_buf, &g_game);
 

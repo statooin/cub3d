@@ -1,0 +1,30 @@
+/* XPM */
+static char *d7781ec49f5245c9ac0186e8abc1bd32138Fwqi7HRrZlPa0[] = {
+/* columns rows colors chars-per-pixel */
+"19 20 4 1 ",
+"  c #FDA500",
+". c None",
+"X c black",
+"o c black",
+/* pixels */
+" XXXXXXXXXXXXXXXXXX",
+"X  XXXXXXXXXXXXXXXX",
+"X    XXXXXXXXXXXXXX",
+"X      XXXXXXXXXXXX",
+"XX       XXXXXXXXXX",
+"XXX        XXXXXXXX",
+"XXX          XXXXXX",
+"XXX            XXXX",
+"XXX              XX",
+"XXXX               ",
+"XXXX               ",
+"XXX              XX",
+"XXX            XXXX",
+"XXX          XXXXXX",
+"XXX        XXXXXXXX",
+"XX       XXXXXXXXXX",
+"X      XXXXXXXXXXXX",
+"X    XXXXXXXXXXXXXX",
+"X  XXXXXXXXXXXXXXXX",
+" XXXXXXXXXXXXXXXXXX"
+};

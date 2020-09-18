@@ -50,6 +50,7 @@
 # define KEY_H		104
 
 # define PI 3.14159
+# define PI2 6.28318
 
 # define SHOWN_NONE		0b0000000000000000
 # define SHOWN_MAP		0b0000000000000001
@@ -140,6 +141,8 @@ typedef struct			s_player
 	float				fplr_v; //player's step speed
 	int					iplr_shield;
 	int					iplr_armor;
+	int					iammo_full;
+	int					iammo;
 	clock_t				cl_regen;
 	unsigned int		uikeys_prsd;
 	int					hp_count; // = 1
@@ -225,6 +228,7 @@ typedef struct			s_tex
 	t_img_n_tex			*tex_floor;
 	t_img_n_tex			**en_anim;
 	t_img_n_tex			*tex_shield;
+	t_img_n_tex			*tex_arr;
 	t_img_n_tex			tex_c_line;
 	t_img_n_tex			tex_c_line_h;
 	t_img_n_tex			tex_muz_00;
@@ -251,6 +255,8 @@ typedef struct	s_enemy
 	int		iaimed;
 	clock_t	cl_move;
 	clock_t	cl_shoot;
+	int		isprite_y_start;
+	int		ihealth;
 }				t_enemy;
 
 t_enemy	*g_enemies;

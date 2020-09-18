@@ -26,7 +26,25 @@ void	ft_draw_wall_stripes_all(float *fray_ang, t_objects *obj, int *i)
 			ft_draw_wall_stripe(fray_ang, &obj[n].itest_x, &ihit_wall, \
 				&obj[n].fdist, &obj[n].ftest_x, &obj[n].ftest_y);
 		}
-		//else ft_draw_enemy(fdist_to_wall); // !!!!!!!!!!!!!!!!!!!!!!!!
+		else
+		{
+			g_enemies[obj[n].ctype - 'a'].isprite_y_start = g_math.ibottom_sky[g_math.iray_x];
+			//obj[n].isprite_y_start = ibottom_sky[g_math.iray_x];
+		}
 		n++;
 	}
+
+	n = *i;
+	while (n >= 0)
+	{
+		if (obj[n].ctype >= 'a')
+		{
+			g_math.ienemy_n = obj[n].ctype - 'a';
+			g_math.ftest_x = obj[n].ftest_x;
+			g_math.ftest_y = obj[n].ftest_y;
+			ft_draw_enemy(&obj[n].fdist); // !!!!!!!!!!!!!!!!!!!!!!!!
+		}
+		n--;
+	}
+
 }

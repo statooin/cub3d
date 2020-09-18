@@ -33,7 +33,8 @@ int	ft_strjoin_f(const char *s1, const char *s2, char **dest)
 			while (s2[++i])
 				str[len1++] = s2[i];
 		str[len1] = '\0';
-		free(*dest);
+		if (*dest)
+			free(*dest);
 		*dest = ft_strdup(str);
 		free(str);
 		return (1);

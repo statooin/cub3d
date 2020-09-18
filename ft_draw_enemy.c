@@ -20,8 +20,9 @@ void	ft_draw_enemy(float *fdist_to_wall)
 	static float	fcount_h;
 	static int		ipixel_color;
 
-	x = (int)(g_math.ftest_x * 30) % 30; //!! redo this
-	y = (int)(g_math.ftest_y * 30) % 30;
+	x = (g_math.ftest_x - (int)g_math.ftest_x) * 30;
+	y = (g_math.ftest_y - (int)g_math.ftest_y) * 30;
+
 	if (g_math.enemy[g_math.ienemy_n][y][x] == '+')
 	{
 		if (g_enemies[g_math.ienemy_n].ifirst_rayx == -401)
@@ -42,21 +43,28 @@ void	ft_draw_enemy(float *fdist_to_wall)
 				y = g_game.iscr_height05 + g_plr.iplr_z; //
 				if ((ienemy_stop = g_game.iscr_height05 - g_enemies[g_math.ienemy_n].fenemy_h * g_enemies[g_math.ienemy_n].ienemy_top + g_plr.iplr_z) < 0) //
 					ienemy_stop = 0;
+
+
 				while (y > ienemy_stop)
 				{
-					ipixel_color = g_tex.en_anim[0][g_enemies[g_math.ienemy_n].en_anim_i].data[(int)fcount_h * g_tex.en_anim[0][g_enemies[g_math.ienemy_n].en_anim_i].width + (int)g_enemies[g_math.ienemy_n].fe_count_w];
-					//if (ipixel_color == 0)
-					//	break;
-					//else if (ipixel_color != 0xFFFFFF)
-					if (ipixel_color > 100)
+					if (y < g_enemies[g_math.ienemy_n].isprite_y_start)
 					{
-						ipixel_color = ft_shades(&ipixel_color, fdist_to_wall);
-	//*(unsigned int*)(g_game.win_buf.addr +(y * g_game.win_buf.size_line + x * data->bpp_8)) = color;
-						ft_mlx_pixel_put(&g_game.win_buf, &g_math.iray_x, &y, &ipixel_color);
+						ipixel_color = g_tex.en_anim[0][g_enemies[g_math.ienemy_n].en_anim_i].data[(int)fcount_h * g_tex.en_anim[0][g_enemies[g_math.ienemy_n].en_anim_i].width + (int)g_enemies[g_math.ienemy_n].fe_count_w];
+						//if (ipixel_color == 0)
+						//	break;
+						//else if (ipixel_color != 0xFFFFFF)
+						if (ipixel_color > 100)
+						{
+							g_game.win_buf.data[y * g_game.iscr_width + g_math.iray_x] = ft_shades(&ipixel_color, fdist_to_wall);
+							//g_math.ibottom_sky[g_math.iray_x] = y;
+							if (g_math.ishot > 0 && y == g_game.iscr_height05 && g_math.iray_x == g_game.iscr_width05) ///!!!
+								g_enemies[g_math.ienemy_n].ihealth -= 20; ///headshot
+						}
 					}
 					fcount_h -= g_enemies[g_math.ienemy_n].fenemy_texh_step;
 					y--;
 				}
+				//g_math.ibottom_sky[g_math.iray_x] = y;
 
 				fcount_h = g_tex.en_anim[0][g_enemies[g_math.ienemy_n].en_anim_i].height * g_enemies[g_math.ienemy_n].ienemy_top; //
 				y = g_game.iscr_height05 + g_plr.iplr_z; // how start from different eyes level height
@@ -64,6 +72,8 @@ void	ft_draw_enemy(float *fdist_to_wall)
 				if (ienemy_stop > g_game.iscr_height)
 					ienemy_stop = g_game.iscr_height;
 				//if ((ienemy_stop = g_game.iscr_height05 + g_enemies[g_math.ienemy_n].fenemy_h * g_enemies[g_math.ienemy_n].ienemy_bottom + (int)g_plr.iplr_z) > g_game.iscr_height) //
+				if (ienemy_stop > g_enemies[g_math.ienemy_n].isprite_y_start)
+					ienemy_stop = g_enemies[g_math.ienemy_n].isprite_y_start;
 				while (y < ienemy_stop)
 				{
 					ipixel_color = g_tex.en_anim[0][g_enemies[g_math.ienemy_n].en_anim_i].data[(int)fcount_h * g_tex.en_anim[0][g_enemies[g_math.ienemy_n].en_anim_i].width + (int)g_enemies[g_math.ienemy_n].fe_count_w];
@@ -71,9 +81,9 @@ void	ft_draw_enemy(float *fdist_to_wall)
 					//	break;
 					/*else*/ if (ipixel_color > 100)//!= 0xFFFFFF)
 					{
-						ipixel_color = ft_shades(&ipixel_color, fdist_to_wall);
-	//*(unsigned int*)(g_game.win_buf.addr +(y * g_game.win_buf.size_line + x * data->bpp_8)) = color;
-						ft_mlx_pixel_put(&g_game.win_buf, &g_math.iray_x, &y, &ipixel_color);
+						g_game.win_buf.data[y * g_game.iscr_width + g_math.iray_x] = ft_shades(&ipixel_color, fdist_to_wall);
+						if (g_math.ishot > 0 && y == g_game.iscr_height05 && g_math.iray_x == g_game.iscr_width05) ///!!!
+							g_enemies[g_math.ienemy_n].ihealth -= 5; /// shot in body
 					}
 					fcount_h += g_enemies[g_math.ienemy_n].fenemy_texh_step;
 					y++;

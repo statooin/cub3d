@@ -14,6 +14,12 @@
 
 void	ft_reset_enemies(void)
 {
+	//static int	i;
+
+	//i = 0;
+	//while (i < 3)
+	if (g_enemies[0].ihealth <= 0 && g_enemies[1].ihealth <= 0 && g_enemies[2].ihealth <= 0)
+		g_math.ienemies_active = 0;
 	g_enemies[0].ifirst_rayx = -401;
 	g_enemies[1].ifirst_rayx = -401;
 	g_enemies[2].ifirst_rayx = -401;

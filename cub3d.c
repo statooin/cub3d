@@ -233,16 +233,30 @@ ft_pause(1100);
 	printf("----------------------\n\n");
 }
 
-void	ft_load_maps()
+void	ft_load_floor()
 {
-	//int					g_math.imap_h;
-	//int					g_math.imap_w;
 	int	i;
-	//int	j;
-	//int	ilen;
-	//int	icount;
-	char  *line;
 	int   fd;
+
+	g_math.imap_w = ft_strlen(g_math.map[0]);
+	g_math.map_floor = malloc(sizeof(char*) * g_math.imap_h);
+
+	i = 0;
+	fd = open("maps/floor.map", O_RDONLY);
+	while (i < g_math.imap_h)
+	{
+		get_next_line(fd, &g_math.map_floor[i]);
+		printf("|%s|\n", g_math.map_floor[i]);
+		i++;
+	}
+	close(fd);
+}
+
+void	ft_load_walls()
+{
+	int	i;
+	int   fd;
+	char  *line;
 
 	g_math.imap_h = 0;
 	fd = open("maps/map.map", O_RDONLY);
@@ -265,24 +279,65 @@ void	ft_load_maps()
 		i++;
 	}
 	close(fd);
+}
 
-	g_math.imap_w = ft_strlen(g_math.map[0]);
-	g_math.map_floor = malloc(sizeof(char*) * g_math.imap_h);
+void	ft_load_maps()
+{
+	ft_load_walls();
+	ft_load_floor();
+}
 
-	//ilen = ft_strlen(g_math.map[0]);
+void	ft_load_ui_arrow()
+{
+	int		i;
+	char	*ctex_name;
+
 	i = 0;
-	fd = open("maps/floor.map", O_RDONLY);
-	while (i < g_math.imap_h)
+	g_tex.tex_arr = malloc(sizeof(t_img_n_tex) * 8);
+	ctex_name = NULL;
+	while (i < 8)
 	{
-		get_next_line(fd, &g_math.map_floor[i]);
-		//j = -1;
-		//while (++j <= ilen)
-		//	if (g_math.map[i][j] == '.')
-		//		g_math.map[i][j] = ' ';
-		printf("|%s|\n", g_math.map_floor[i]);
+		ft_strjoin_f("textures/ui/arrows/ui_arr_", ft_itoa(i), &ctex_name);
+		ft_strjoin_f(ctex_name, ".xpm", &ctex_name);
+		g_tex.tex_arr[i].ptr = mlx_xpm_file_to_image(g_game.mlx, \
+			ctex_name, &g_tex.tex_arr[i].width, \
+			&g_tex.tex_arr[i].height);
+		g_tex.tex_arr[i].data = \
+			(int *)mlx_get_data_addr(g_tex.tex_arr[i].ptr, \
+			&g_tex.tex_arr[i].bpp, &g_tex.tex_arr[i].size_line, \
+			&g_tex.tex_arr[i].endian);
+		g_tex.tex_arr[i].scale = 1;
+		g_tex.tex_arr[i].step = 1 / g_tex.tex_arr[i].scale;
+		g_tex.tex_arr[i].opacity = 0.8;
+		g_tex.tex_arr[i].opacity_1 = 1 - 0.8;
 		i++;
 	}
-	close(fd);
+}
+
+void	ft_load_ui()
+{
+	g_tex.tex_c_line.ptr = mlx_xpm_file_to_image(g_game.mlx, "textures/crossline.xpm", &g_tex.tex_c_line.width, &g_tex.tex_c_line.height);
+	g_tex.tex_c_line.data = (int *)mlx_get_data_addr(g_tex.tex_c_line.ptr, &g_tex.tex_c_line.bpp, &g_tex.tex_c_line.size_line, &g_tex.tex_c_line.endian);
+	g_tex.tex_c_line.scale = 0.35; //!re do this! whithout scale!!
+	g_tex.tex_c_line.step = 1 / g_tex.tex_c_line.scale;
+	g_tex.tex_c_line.opacity = 0.7;
+	g_tex.tex_c_line.opacity_1 = 1 - 0.7;
+
+	g_tex.tex_c_line_h.ptr = mlx_xpm_file_to_image(g_game.mlx, "textures/crossline_h.xpm", &g_tex.tex_c_line_h.width, &g_tex.tex_c_line_h.height);
+	g_tex.tex_c_line_h.data = (int *)mlx_get_data_addr(g_tex.tex_c_line_h.ptr, &g_tex.tex_c_line_h.bpp, &g_tex.tex_c_line_h.size_line, &g_tex.tex_c_line_h.endian);
+	g_tex.tex_c_line_h.scale = 0.35;
+	g_tex.tex_c_line_h.step = 1 / g_tex.tex_c_line_h.scale;
+	g_tex.tex_c_line_h.opacity = 0.7;
+	g_tex.tex_c_line_h.opacity_1 = 1 - 0.7;
+
+	g_tex.tex_map_ui.ptr = mlx_xpm_file_to_image(g_game.mlx, "textures/ui/map_ui.xpm", &g_tex.tex_map_ui.width, &g_tex.tex_map_ui.height);
+	g_tex.tex_map_ui.data = (int *)mlx_get_data_addr(g_tex.tex_map_ui.ptr, &g_tex.tex_map_ui.bpp, &g_tex.tex_map_ui.size_line, &g_tex.tex_muz_00.endian);
+	g_tex.tex_map_ui.scale = 1;
+	g_tex.tex_map_ui.step = 1 / g_tex.tex_map_ui.scale;
+	g_tex.tex_map_ui.opacity = 0.7;
+	g_tex.tex_map_ui.opacity_1 = 1 - 0.7;
+
+	ft_load_ui_arrow();
 }
 
 int	main(void)
@@ -331,7 +386,6 @@ int	main(void)
 	g_tex.tex_ui_01.data = (int *)mlx_get_data_addr(g_tex.tex_ui_01.ptr, &g_tex.tex_ui_01.bpp, &g_tex.tex_ui_01.size_line, &g_tex.tex_ui_01.endian);
 	g_tex.tex_ui_01.scale = 0.21;
 	g_tex.tex_ui_01.step = 1 / g_tex.tex_ui_01.scale;
-
 	ft_put_scaled_img_lt_to_win(&g_game.win_buf, &g_game, &g_tex.tex_ui_01, 30, g_game.iscr_height - 30); //del this
 	mlx_put_image_to_window(g_game.mlx, g_game.mlx_win, g_game.win_buf.ptr, 0, 0);
 
@@ -340,25 +394,28 @@ int	main(void)
 
 	ft_load_maps();
 
+
 	g_plr.fplr_z0 = -0.6f; //player's "height"
 	g_plr.fplr_zhead = 1.0f; // !! ?? how to crouch ctrl
+	g_plr.fplr_v = 0.04f;
+	g_plr.uikeys_prsd = PRSD_NONE;
+	g_plr.iplr_z = 0;//player.g_plr.fplr_z0;
+	g_plr.iammo_full = 360;
+	g_plr.iammo = 45;
+
 	g_consts.ffov = 3.14159 / 3.2; // /8 !! need fix with / 3.0  // field of view 15.0-20.0 this id sniper zoom!! )))
 	g_consts.ffov_vert = g_consts.ffov;
 	g_consts.ffloor_ang0 = PI / 2.0f - g_consts.ffov_vert / 2.0f;
 	g_consts.ffov05 = g_consts.ffov / 2.0f;
-	g_plr.fplr_v = 0.04f;
 	g_consts.fray_ang_step = 1.0f / (float)g_game.iscr_width * g_consts.ffov;
 	g_consts.fray_ang_step2 = g_consts.fray_ang_step * 2;
 	g_consts.ffloor_ang_step = 1.0f / (float)(g_game.iscr_height) * g_consts.ffov_vert;
 	g_consts.ffloor_ang_step2 = g_consts.ffloor_ang_step * 2;
 	g_consts.fstep_check = 0.01f; // !!! 0.03f 0.01f
 	g_math.isky_x = - g_tex.tex_sky.width / 2;
-	g_plr.uikeys_prsd = PRSD_NONE;
-	g_plr.iplr_z = 0;//player.g_plr.fplr_z0;
 
-/*
+
 	ft_init_enemies(); //////!!!!!!!!!!
-*/
 	ft_put_objects(26, ft_strlen(g_math.map[0]) - 1);
 
 
@@ -404,12 +461,7 @@ int	main(void)
 
 	ft_init_vignette(&g_game, &g_tex.tex_vign);
 
-	g_tex.tex_map_ui.ptr = mlx_xpm_file_to_image(g_game.mlx, "textures/ui/map_ui.xpm", &g_tex.tex_map_ui.width, &g_tex.tex_map_ui.height);
-	g_tex.tex_map_ui.data = (int *)mlx_get_data_addr(g_tex.tex_map_ui.ptr, &g_tex.tex_map_ui.bpp, &g_tex.tex_map_ui.size_line, &g_tex.tex_muz_00.endian);
-	g_tex.tex_map_ui.scale = 1;
-	g_tex.tex_map_ui.step = 1 / g_tex.tex_map_ui.scale;
-	g_tex.tex_map_ui.opacity = 0.7;
-	g_tex.tex_map_ui.opacity_1 = 1 - 0.7;
+	ft_load_ui();
 
 	g_tex.tex_muz_00.ptr = mlx_xpm_file_to_image(g_game.mlx, "textures/gun/muzzle_flash_00.xpm", &g_tex.tex_muz_00.width, &g_tex.tex_muz_00.height);
 	g_tex.tex_muz_00.data = (int *)mlx_get_data_addr(g_tex.tex_muz_00.ptr, &g_tex.tex_muz_00.bpp, &g_tex.tex_muz_00.size_line, &g_tex.tex_muz_00.endian);
@@ -437,19 +489,7 @@ int	main(void)
 	ft_put_scaled_img_lt_to_win(&g_game.win_buf, &g_game, &g_tex.tex_ui_02, i_load_x, g_game.iscr_height - 27); //del this
 	mlx_put_image_to_window(g_game.mlx, g_game.mlx_win, g_game.win_buf.ptr, 0, 0);
 
-	g_tex.tex_c_line.ptr = mlx_xpm_file_to_image(g_game.mlx, "textures/crossline.xpm", &g_tex.tex_c_line.width, &g_tex.tex_c_line.height);
-	g_tex.tex_c_line.data = (int *)mlx_get_data_addr(g_tex.tex_c_line.ptr, &g_tex.tex_c_line.bpp, &g_tex.tex_c_line.size_line, &g_tex.tex_c_line.endian);
-	g_tex.tex_c_line.scale = 0.35; //!re do this! whithout scale!!
-	g_tex.tex_c_line.step = 1 / g_tex.tex_c_line.scale;
-	g_tex.tex_c_line.opacity = 0.7;
-	g_tex.tex_c_line.opacity_1 = 1 - 0.7;
 
-	g_tex.tex_c_line_h.ptr = mlx_xpm_file_to_image(g_game.mlx, "textures/crossline_h.xpm", &g_tex.tex_c_line_h.width, &g_tex.tex_c_line_h.height);
-	g_tex.tex_c_line_h.data = (int *)mlx_get_data_addr(g_tex.tex_c_line_h.ptr, &g_tex.tex_c_line_h.bpp, &g_tex.tex_c_line_h.size_line, &g_tex.tex_c_line_h.endian);
-	g_tex.tex_c_line_h.scale = 0.35;
-	g_tex.tex_c_line_h.step = 1 / g_tex.tex_c_line_h.scale;
-	g_tex.tex_c_line_h.opacity = 0.7;
-	g_tex.tex_c_line_h.opacity_1 = 1 - 0.7;
 
 	i_load_x += 9;
 	ft_put_scaled_img_lt_to_win(&g_game.win_buf, &g_game, &g_tex.tex_ui_02, i_load_x, g_game.iscr_height - 27); //del this

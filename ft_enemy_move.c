@@ -17,21 +17,26 @@ void	ft_enemy_move(void)
 	g_math.ienemy_n = 0;
 	while (g_math.ienemy_n < 3)
 	{
-		if ((clock() - g_enemies[g_math.ienemy_n].cl_move) \
-		* 1000 / CLOCKS_PER_SEC > 100)
+		if (g_enemies[g_math.ienemy_n].ihealth > 0 )
 		{
-			g_enemies[g_math.ienemy_n].cl_move = clock();
-			if (g_enemies[g_math.ienemy_n].ienemy_y + 1 < (int)g_plr.fplr_y)
-				ft_move_enemy_down();
-			else if (g_enemies[g_math.ienemy_n].ienemy_y \
-			- 1 > (int)g_plr.fplr_y)
-				ft_move_enemy_up();
-			if (g_enemies[g_math.ienemy_n].ienemy_x - 1 > (int)g_plr.fplr_x)
-				ft_move_enemy_left();
-			else if (g_enemies[g_math.ienemy_n].ienemy_x \
-			+ 1 < (int)g_plr.fplr_x)
-				ft_move_enemy_right();
+			if ((clock() - g_enemies[g_math.ienemy_n].cl_move) \
+			* 1000 / CLOCKS_PER_SEC > 100)
+			{
+				g_enemies[g_math.ienemy_n].cl_move = clock();
+				if (g_enemies[g_math.ienemy_n].ienemy_y + 1 < (int)g_plr.fplr_y)
+					ft_move_enemy_down();
+				else if (g_enemies[g_math.ienemy_n].ienemy_y \
+				- 1 > (int)g_plr.fplr_y)
+					ft_move_enemy_up();
+				if (g_enemies[g_math.ienemy_n].ienemy_x - 1 > (int)g_plr.fplr_x)
+					ft_move_enemy_left();
+				else if (g_enemies[g_math.ienemy_n].ienemy_x \
+				+ 1 < (int)g_plr.fplr_x)
+					ft_move_enemy_right();
+			}
 		}
+		else
+			g_math.map[g_enemies[g_math.ienemy_n].ienemy_y][g_enemies[g_math.ienemy_n].ienemy_x] = ' '; ///!!!killed
 		g_math.ienemy_n++;
 	}
 }

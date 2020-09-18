@@ -20,30 +20,33 @@ void		ft_init_enemies(void)
 
 	g_enemies[0].ienemy_width = 2; // / (8 / 3.2);
 	g_enemies[0].ienemy_top = 0.2f;
-	g_enemies[0].fenemy_bottom = 1 - g_enemies[0].ienemy_top;
+	g_enemies[0].fenemy_bottom = 1.0f - g_enemies[0].ienemy_top;
 	g_enemies[0].fenemy_tall = 1.2f; //  * (8 / 3.2)
 	g_enemies[0].en_anim_i = 0;
 	g_enemies[0].ifirst_rayx = -401;
-	g_enemies[0].cl_move = 0.1;
-	g_enemies[0].cl_shoot = 0.15;
+	g_enemies[0].cl_move = 0.1f;
+	g_enemies[0].cl_shoot = 0.2f;
+	g_enemies[0].ihealth = 100;
 
 	g_enemies[1].ienemy_width = 2; // / (8 / 3.2);
 	g_enemies[1].ienemy_top = 0.2f;
-	g_enemies[1].fenemy_bottom = 1 - g_enemies[1].ienemy_top;
+	g_enemies[1].fenemy_bottom = 1.0f - g_enemies[1].ienemy_top;
 	g_enemies[1].fenemy_tall = 1.2f; //  * (8 / 3.2)
-	g_enemies[1].en_anim_i = 1;
+	g_enemies[1].en_anim_i = 0;
 	g_enemies[1].ifirst_rayx = -401;
-	g_enemies[1].cl_move = 0.15;
-	g_enemies[1].cl_shoot = 0.1;
+	g_enemies[1].cl_move = 0.2f;
+	g_enemies[1].cl_shoot = 0.15f;
+	g_enemies[1].ihealth = 100;
 
 	g_enemies[2].ienemy_width = 2; // / (8 / 3.2);
 	g_enemies[2].ienemy_top = 0.2f;
-	g_enemies[2].fenemy_bottom = 1 - g_enemies[2].ienemy_top;
+	g_enemies[2].fenemy_bottom = 1.0f - g_enemies[2].ienemy_top;
 	g_enemies[2].fenemy_tall = 1.2f; //  * (8 / 3.2)
-	g_enemies[2].en_anim_i = 3;
+	g_enemies[2].en_anim_i = 0;
 	g_enemies[2].ifirst_rayx = -401;
-	g_enemies[2].cl_move = 0.19;
-	g_enemies[2].cl_shoot = 0.05;
+	g_enemies[2].cl_move = 0.15f;
+	g_enemies[2].cl_shoot = 0.1f;
+	g_enemies[2].ihealth = 100;
 	//write(1, "1", 1);
 
 	g_tex.en_anim = malloc(sizeof(t_img_n_tex*) * 2);
