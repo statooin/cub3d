@@ -22,7 +22,7 @@ void	ft_player_shot(void)
 	static int	pid;
 
 	ft_put_scaled_opac_img_to_win(&g_game.win_buf, &g_game, &g_tex.tex_muz_00, g_game.iscr_width05, g_game.iscr_height05);
-	if (g_plr.iammo > 0)
+	if (g_plr.iammo > 0 && g_math.ishot == 3)
 	{
 		pid = fork();
 		if (pid == 0)
@@ -30,10 +30,9 @@ void	ft_player_shot(void)
 			system("mpg123 -q -f 22000 sound/m8_burst.mp3");
 			exit(0);
 		}
-		g_math.ishot--;
 		g_plr.iammo -= 3;
 	}
-	else
+	else if (g_math.ishot == 3)
 	{
 		pid = fork();
 		if (pid == 0)
@@ -44,4 +43,5 @@ void	ft_player_shot(void)
 		}
 		ft_m8_reload();
 	}
+		g_math.ishot--;
 }

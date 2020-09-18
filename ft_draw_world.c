@@ -200,7 +200,7 @@ int	ft_draw_world(void)
 
 	ft_draw_floor();
 	//ft_draw_simple_color_floor();
-	if (g_math.ienemies_active == 1)
+	if (g_math.ienemies_active == 1 && g_plr.iplay_cut_scene == 0)
 	{
 		ft_enemy_move();
 		ft_reset_enemies();
