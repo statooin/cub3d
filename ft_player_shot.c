@@ -14,34 +14,73 @@
 
 void	ft_m8_reload(void)
 {
-	g_plr.iammo = 45;
+	static int	pid;
+	static int	ibullets;
+
+	if (g_plr.iammo_full >= 0)
+	{
+		pid = fork();
+		if (pid == 0)
+		{
+			system("mpg123 -q -f 22000 sound/m8_reload.mp3");
+			exit(0);
+		}
+
+		ibullets = 45 - g_plr.iammo;
+		if ((g_plr.iammo_full - ibullets) >= 0)
+		{
+			g_plr.iammo = 45;
+			g_plr.iammo_full -= ibullets;
+		}
+		else
+		{
+			g_plr.iammo += g_plr.iammo_full;
+			g_plr.iammo_full = 0;
+		}
+	}
+	else
+	{
+		pid = fork();
+		if (pid == 0)
+		{
+			system("mpg123 -q -f 22000 sound/m8_empty.mp3");
+			exit(0);
+		}
+	}
 }
 
 void	ft_player_shot(void)
 {
 	static int	pid;
 
-	ft_put_scaled_opac_img_to_win(&g_game.win_buf, &g_game, &g_tex.tex_muz_00, g_game.iscr_width05, g_game.iscr_height05);
-	if (g_plr.iammo > 0 && g_math.ishot == 3)
+	if (g_math.ishot > 0)
 	{
-		pid = fork();
-		if (pid == 0)
-		{
-			system("mpg123 -q -f 22000 sound/m8_burst.mp3");
-			exit(0);
-		}
-		g_plr.iammo -= 3;
-	}
-	else if (g_math.ishot == 3)
-	{
-		pid = fork();
-		if (pid == 0)
-		{
-			system("mpg123 -q -f 22000 sound/m8_empty.mp3");
-			system("mpg123 -q -f 22000 sound/m8_reload.mp3");
-			exit(0);
-		}
-		ft_m8_reload();
-	}
+		ft_put_scaled_opac_img_to_win(&g_game.win_buf, &g_game, &g_tex.tex_muz_00, g_game.iscr_width05, g_game.iscr_height05);
 		g_math.ishot--;
+	}
+	else
+	{
+		if (g_plr.iammo > 0)
+		{
+			pid = fork();
+			if (pid == 0)
+			{
+				system("mpg123 -q -f 22000 sound/m8_burst.mp3");
+				exit(0);
+			}
+			g_plr.iammo -= 3;
+			g_math.ishot = 3;
+			ft_put_scaled_opac_img_to_win(&g_game.win_buf, &g_game, &g_tex.tex_muz_00, g_game.iscr_width05, g_game.iscr_height05);
+		}
+		else
+		{
+			pid = fork();
+			if (pid == 0)
+			{
+				system("mpg123 -q -f 22000 sound/m8_empty.mp3");
+				exit(0);
+			}
+			ft_m8_reload();
+		}
+	}
 }

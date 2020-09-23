@@ -21,7 +21,8 @@ int	ft_mouse_click(int ikey)
 		if ((g_plr.uikeys_prsd & PRSD_H) == 0)
 			g_plr.uikeys_prsd |= PRSD_H;
 		else
-			g_math.ishot = 3;
+			ft_player_shot();
+			//g_math.ishot = 3;
 	}
 	return (1);
 }

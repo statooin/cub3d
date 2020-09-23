@@ -163,13 +163,13 @@ void	ft_show_ui_map()
 		g_ui_anim.clstart = clock();
 		g_ui_anim.istart_x = g_game.iscr_width05;
 		g_ui_anim.istop_x = g_game.iscr_width05 / 3;
-		g_ui_anim.istart_y = g_game.iscr_height05 * 1.5;
+		g_ui_anim.istart_y = g_game.iscr_height05 * 1.5f;
 		g_ui_anim.istop_y = g_game.iscr_height05 / 3;
 		g_ui_anim.istop_msec = 100;
-		g_ui_anim.fstart_scale = 0.1;
+		g_ui_anim.fstart_scale = 0.1f;
 		g_ui_anim.fstop_scale = 1.0; ///!!! re do this
-		g_ui_anim.fstart_opac = 0.1;
-		g_ui_anim.fstop_opac = 0.9;
+		g_ui_anim.fstart_opac = 0.1f;
+		g_ui_anim.fstop_opac = 0.9f;
 		g_ui_anim.ianim = 1;
 		g_ui_anim.tex_anim = &g_tex.tex_map_ui;
 		ft_ui_move_lt();
@@ -211,7 +211,7 @@ int	ft_draw_world(void)
 	ft_draw_walls();
 	//ft_draw_simple_color_sky();
 	ft_draw_skybox();
-	if (g_math.ienemies_active == 1)
+	if (g_math.ienemies_active == 1 && g_plr.iplay_cut_scene == 0)
 		ft_enemy_aim();
 	//ft_draw_hp(1);
 
@@ -227,18 +227,35 @@ int	ft_draw_world(void)
 			//ft_show_left_hand();
 			ft_show_ui_map();
 		}
-		if ((g_plr.uikeys_prsd & PRSD_M) != 0 && (g_plr.uikeys_prsd & PRSD_H) != 0)
-		{
-			ft_shields();
-		}
 		else if ((g_plr.uikeys_prsd & PRSD_M) == 0 && (g_plr.uikeys_prsd & PRSD_H) != 0)
 		{
 			ft_draw_crosshair();
-			ft_shields();
 			if (g_math.ishot > 0)
 				ft_player_shot();
 			//ft_draw_weapon();
 		}
+		if ((g_plr.uikeys_prsd & PRSD_H) != 0)
+		{
+			ft_shields();
+
+			ft_put_scaled_opac_img_lt_to_win(&g_game.win_buf, &g_game, \
+				&g_tex.tex_gun_ui, 20, g_game.iscr_height - 110); //tex_gun_ui
+
+			ft_put_scaled_opac_img_lt_to_win(&g_game.win_buf, &g_game, \
+				&g_tex.tex_digits[g_plr.iammo_full / 100], 114, g_game.iscr_height - 60); //tex_gun_ui
+			ft_put_scaled_opac_img_lt_to_win(&g_game.win_buf, &g_game, \
+				&g_tex.tex_digits[g_plr.iammo_full % 100 / 10], 134, g_game.iscr_height - 60); //tex_gun_ui
+			ft_put_scaled_opac_img_lt_to_win(&g_game.win_buf, &g_game, \
+				&g_tex.tex_digits[g_plr.iammo_full % 10], 154, g_game.iscr_height - 60); //tex_gun_ui
+
+			ft_put_scaled_opac_img_lt_to_win(&g_game.win_buf, &g_game, \
+				&g_tex.tex_digits[g_plr.iammo / 10], 34, g_game.iscr_height - 42); //tex_gun_ui
+			ft_put_scaled_opac_img_lt_to_win(&g_game.win_buf, &g_game, \
+				&g_tex.tex_digits[g_plr.iammo % 10], 54, g_game.iscr_height - 42); //tex_gun_ui
+//g_plr.iammo_full
+
+		}
+
 	}
 	ft_draw_vignette();//&g_game.win_buf, &g_game);
 

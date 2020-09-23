@@ -233,7 +233,9 @@ typedef struct			s_tex
 	t_img_n_tex			tex_c_line_h;
 	t_img_n_tex			tex_muz_00;
 	t_img_n_tex			*tex_armor;
+	t_img_n_tex			*tex_digits;
 	t_img_n_tex			tex_map_ui;
+	t_img_n_tex			tex_gun_ui;
 }						t_tex;
 //int	***tex_floor2;
 
@@ -326,6 +328,7 @@ void	ft_put_scaled_img_to_win(t_img_n_tex *win_buf, t_game *g_game,
 	t_img_n_tex *tex_01, int img_x_center, int img_y_center);
 void	ft_put_scaled_opac_img_to_win(t_img_n_tex *win_buf, t_game *g_game,
 	t_img_n_tex *tex_01, int img_x_center, int img_y_center);
+void	ft_m8_reload();
 void	ft_reset_enemies();
 void	ft_savebmp();
 int		ft_shades(int *color, float *fdist_to_wall);

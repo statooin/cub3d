@@ -238,7 +238,7 @@ void	ft_load_floor()
 	int	i;
 	int   fd;
 
-	g_math.imap_w = ft_strlen(g_math.map[0]);
+	g_math.imap_w = ft_strlen(g_math.map[g_math.imap_h - 1]);
 	g_math.map_floor = malloc(sizeof(char*) * g_math.imap_h);
 
 	i = 0;
@@ -306,10 +306,38 @@ void	ft_load_ui_arrow()
 			(int *)mlx_get_data_addr(g_tex.tex_arr[i].ptr, \
 			&g_tex.tex_arr[i].bpp, &g_tex.tex_arr[i].size_line, \
 			&g_tex.tex_arr[i].endian);
-		g_tex.tex_arr[i].scale = 1;
-		g_tex.tex_arr[i].step = 1 / g_tex.tex_arr[i].scale;
-		g_tex.tex_arr[i].opacity = 0.8;
-		g_tex.tex_arr[i].opacity_1 = 1 - 0.8;
+		g_tex.tex_arr[i].scale = 1.0f;
+		g_tex.tex_arr[i].step = 1.0f / g_tex.tex_arr[i].scale;
+		g_tex.tex_arr[i].opacity = 0.8f;
+		g_tex.tex_arr[i].opacity_1 = 1.0f - 0.8f;
+		i++;
+	}
+}
+
+void	ft_load_ui_digits(void)
+{
+	int		i;
+	char	*ctex_name;
+
+	i = 0;
+	g_plr.iplr_armor = 28;
+	g_tex.tex_digits = malloc(sizeof(t_img_n_tex) * 10);
+	ctex_name = NULL;
+	while (i <= 9)
+	{
+		ft_strjoin_f("textures/ui/digits/", ft_itoa(i), &ctex_name);
+		ft_strjoin_f(ctex_name, ".xpm", &ctex_name);
+		g_tex.tex_digits[i].ptr = mlx_xpm_file_to_image(g_game.mlx, \
+			ctex_name, &g_tex.tex_digits[i].width, \
+			&g_tex.tex_digits[i].height);
+		g_tex.tex_digits[i].data = \
+			(int *)mlx_get_data_addr(g_tex.tex_digits[i].ptr, \
+			&g_tex.tex_digits[i].bpp, &g_tex.tex_digits[i].size_line, \
+			&g_tex.tex_digits[i].endian);
+		g_tex.tex_digits[i].scale = 0.9f;
+		g_tex.tex_digits[i].step = 1.0f / g_tex.tex_digits[i].scale;
+		g_tex.tex_digits[i].opacity = 0.8f;
+		g_tex.tex_digits[i].opacity_1 = 1.0f - 0.8f;
 		i++;
 	}
 }
@@ -318,26 +346,34 @@ void	ft_load_ui()
 {
 	g_tex.tex_c_line.ptr = mlx_xpm_file_to_image(g_game.mlx, "textures/crossline.xpm", &g_tex.tex_c_line.width, &g_tex.tex_c_line.height);
 	g_tex.tex_c_line.data = (int *)mlx_get_data_addr(g_tex.tex_c_line.ptr, &g_tex.tex_c_line.bpp, &g_tex.tex_c_line.size_line, &g_tex.tex_c_line.endian);
-	g_tex.tex_c_line.scale = 0.35; //!re do this! whithout scale!!
-	g_tex.tex_c_line.step = 1 / g_tex.tex_c_line.scale;
-	g_tex.tex_c_line.opacity = 0.7;
-	g_tex.tex_c_line.opacity_1 = 1 - 0.7;
+	g_tex.tex_c_line.scale = 0.35f; //!re do this! whithout scale!!
+	g_tex.tex_c_line.step = 1.0f / g_tex.tex_c_line.scale;
+	g_tex.tex_c_line.opacity = 0.7f;
+	g_tex.tex_c_line.opacity_1 = 1.0f - 0.7f;
 
 	g_tex.tex_c_line_h.ptr = mlx_xpm_file_to_image(g_game.mlx, "textures/crossline_h.xpm", &g_tex.tex_c_line_h.width, &g_tex.tex_c_line_h.height);
 	g_tex.tex_c_line_h.data = (int *)mlx_get_data_addr(g_tex.tex_c_line_h.ptr, &g_tex.tex_c_line_h.bpp, &g_tex.tex_c_line_h.size_line, &g_tex.tex_c_line_h.endian);
-	g_tex.tex_c_line_h.scale = 0.35;
-	g_tex.tex_c_line_h.step = 1 / g_tex.tex_c_line_h.scale;
-	g_tex.tex_c_line_h.opacity = 0.7;
-	g_tex.tex_c_line_h.opacity_1 = 1 - 0.7;
+	g_tex.tex_c_line_h.scale = 0.35f;
+	g_tex.tex_c_line_h.step = 1.0f / g_tex.tex_c_line_h.scale;
+	g_tex.tex_c_line_h.opacity = 0.7f;
+	g_tex.tex_c_line_h.opacity_1 = 1.0f - 0.7f;
 
 	g_tex.tex_map_ui.ptr = mlx_xpm_file_to_image(g_game.mlx, "textures/ui/map_ui.xpm", &g_tex.tex_map_ui.width, &g_tex.tex_map_ui.height);
-	g_tex.tex_map_ui.data = (int *)mlx_get_data_addr(g_tex.tex_map_ui.ptr, &g_tex.tex_map_ui.bpp, &g_tex.tex_map_ui.size_line, &g_tex.tex_muz_00.endian);
+	g_tex.tex_map_ui.data = (int *)mlx_get_data_addr(g_tex.tex_map_ui.ptr, &g_tex.tex_map_ui.bpp, &g_tex.tex_map_ui.size_line, &g_tex.tex_map_ui.endian);
 	g_tex.tex_map_ui.scale = 1;
 	g_tex.tex_map_ui.step = 1 / g_tex.tex_map_ui.scale;
-	g_tex.tex_map_ui.opacity = 0.7;
-	g_tex.tex_map_ui.opacity_1 = 1 - 0.7;
+	g_tex.tex_map_ui.opacity = 0.7f;
+	g_tex.tex_map_ui.opacity_1 = 1.0f - 0.7f;
+
+	g_tex.tex_gun_ui.ptr = mlx_xpm_file_to_image(g_game.mlx, "textures/ui/ui_gun.xpm", &g_tex.tex_gun_ui.width, &g_tex.tex_gun_ui.height);
+	g_tex.tex_gun_ui.data = (int *)mlx_get_data_addr(g_tex.tex_gun_ui.ptr, &g_tex.tex_gun_ui.bpp, &g_tex.tex_gun_ui.size_line, &g_tex.tex_gun_ui.endian);
+	g_tex.tex_gun_ui.scale = 0.7f;
+	g_tex.tex_gun_ui.step = 1.0f / g_tex.tex_gun_ui.scale;
+	g_tex.tex_gun_ui.opacity = 0.7f;
+	g_tex.tex_gun_ui.opacity_1 = 1.0f - 0.7f;
 
 	ft_load_ui_arrow();
+	ft_load_ui_digits();
 }
 
 int	main(void)

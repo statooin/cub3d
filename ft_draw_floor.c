@@ -46,6 +46,9 @@ void	ft_draw_floor(void)
 				t_w = (ffloor_tilex - (int)ffloor_tilex) * g_tex.tex_floor[ihit_floor].width; //fastest!
 				t_h = (ffloor_tiley - (int)ffloor_tiley) * g_tex.tex_floor[ihit_floor].height;
 				g_game.win_buf.data[y * g_game.iscr_width + g_math.iray_x] = ft_shades(&g_tex.tex_floor[ihit_floor].data[t_h * g_tex.tex_floor[ihit_floor].width + t_w], &g_math.fdist_to_all_tiles[idraw_y][g_math.iray_x]);
+
+				//y = g_game.iscr_height - y; ///!!! ceeling!!!
+				//g_game.win_buf.data[y * g_game.iscr_width + g_math.iray_x] = ft_shades(&g_tex.tex_floor[ihit_floor].data[t_h * g_tex.tex_floor[ihit_floor].width + t_w], &g_math.fdist_to_all_tiles[idraw_y][g_math.iray_x]);
 			}
 			idraw_y--; //make adaptive
 		}

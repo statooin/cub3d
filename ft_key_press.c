@@ -30,6 +30,8 @@ int	ft_key_press(int ikey)
 		g_plr.uikeys_prsd |= PRSD_A;
 	if (ikey == KEY_D)
 		g_plr.uikeys_prsd |= PRSD_D;
+	if (ikey == KEY_R)
+		ft_m8_reload();
 
 
 	if (ikey == KEY_SHIFT)
