@@ -18,7 +18,7 @@ void	ft_init_armor(void)
 	char	*ctex_name;
 
 	i = 0;
-	g_plr.iplr_armor = 18;
+	g_plr.iplr_armor = 17;
 	g_tex.tex_armor = malloc(sizeof(t_img_n_tex) * 19);
 	ctex_name = NULL;
 	while (i <= 18)

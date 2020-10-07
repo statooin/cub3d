@@ -147,6 +147,7 @@ typedef struct			s_player
 	unsigned int		uikeys_prsd;
 	int					hp_count; // = 1
 	int					iplay_cut_scene;
+	int					igun_h;
 	//int					iplay_ui;
 }						t_player;
 //int iKeyOff; // duration of jump
@@ -236,6 +237,7 @@ typedef struct			s_tex
 	t_img_n_tex			*tex_digits;
 	t_img_n_tex			tex_map_ui;
 	t_img_n_tex			tex_gun_ui;
+	t_img_n_tex			tex_gun;
 }						t_tex;
 //int	***tex_floor2;
 
@@ -246,7 +248,7 @@ typedef struct	s_enemy
 	float	fenemy_texh_step;
 	float	fe_count_w;
 	float	fenemy_h;
-	int		ienemy_width; // take from struct
+	float		ienemy_width; // take from struct
 	float	ienemy_top; // take from struct
 	float	fenemy_bottom; // take from struct
 	float	fenemy_tall; // take from struct

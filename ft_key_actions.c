@@ -14,8 +14,6 @@
 
 void	ft_key_move(void)
 {
-	//static int	pid;
-
 	if ((g_plr.uikeys_prsd & PRSD_A) != 0)
 	{
 		g_plr.fplr_y += cosf(g_plr.fplr_a - 1.7f) * g_plr.fplr_v / 1.5f;
@@ -82,13 +80,25 @@ void	ft_key_move(void)
 		g_snd.isteps = 1;
 		system(g_snd.cstp_surf_un);
 	}
-
 }
 
 void	ft_key_actions(void)
 {
+	static int	igun_shake;
+
 	if ((g_plr.uikeys_prsd & PRSD_DOWN_S) != 0 || (g_plr.uikeys_prsd & PRSD_UP_W) != 0 || (g_plr.uikeys_prsd & PRSD_D) != 0 || (g_plr.uikeys_prsd & PRSD_A) != 0)
+	{
+		if (g_math.ishot == 0)
+		{
+			if (g_plr.igun_h < -20)
+				igun_shake = 2;
+			else if (g_plr.igun_h > 20)
+				igun_shake = -2;
+
+			g_plr.igun_h += igun_shake;
+		}
 		ft_key_move();
+	}
 	else if (g_snd.isteps == 1 || g_snd.irun == 1)
 	{
 		g_snd.irun = 0;

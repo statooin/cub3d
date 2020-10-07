@@ -1,0 +1,32 @@
+sudo apt install libx11-dev
+sudo apt-get install libxext-dev
+
+for mac:
+mpg123
+pidof
+pacmd -> pulseaudio
+pulseaudio --start
+
+
+Processing triggers for kali-menu (2020.1.7) ...
+statooin@statooin:~/Downloads/cub3d$ sudo apt install build-essential
+Reading package lists... Done
+Building dependency tree       
+Reading state information... Done
+The following additional packages will be installed:
+  g++ g++-10 gcc libstdc++-10-dev
+Suggested packages:
+
+
+sudo apt-get autoremove --purge libstdc++-10-dev -y
+
+sudo apt-get install gcc-9-base
+sudo apt-get install libgcc-9-dev
+sudo apt-get install libstdc++-9-dev
+
+sudo apt-get install gcc-9 g++-9 -y
+
+update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 1 --slave /usr/bin/g++ g++ /usr/bin/g++-9
+update-alternatives --config gcc
+
+https://unix.stackexchange.com/questions/410723/how-to-install-a-specific-version-of-gcc-in-kali-linux

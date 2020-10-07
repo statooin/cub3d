@@ -18,11 +18,11 @@ void		ft_init_enemies(void)
 
 	g_enemies = malloc(sizeof(t_enemy) * 20);
 
-	g_enemies[0].ienemy_width = 2; // / (8 / 3.2);
-	g_enemies[0].ienemy_top = 0.2f;
+	g_enemies[0].ienemy_width = 1.8f; // / (8 / 3.2);
+	g_enemies[0].ienemy_top = 0.15f;//0.3f;
 	g_enemies[0].fenemy_bottom = 1.0f - g_enemies[0].ienemy_top;
-	g_enemies[0].fenemy_tall = 1.2f; //  * (8 / 3.2)
-	g_enemies[0].en_anim_i = 0;
+	g_enemies[0].fenemy_tall = 0.95f; //  * (8 / 3.2)
+	g_enemies[0].en_anim_i = 16;
 	g_enemies[0].ifirst_rayx = -401;
 	g_enemies[0].cl_move = 0.1f;
 	g_enemies[0].cl_shoot = 0.2f;
@@ -50,7 +50,7 @@ void		ft_init_enemies(void)
 	//write(1, "1", 1);
 
 	g_tex.en_anim = malloc(sizeof(t_img_n_tex*) * 2);
-	g_tex.en_anim[0] = malloc(sizeof(t_img_n_tex) * 16);
+	g_tex.en_anim[0] = malloc(sizeof(t_img_n_tex) * 17);
 
 	g_tex.en_anim[0][0].ptr = mlx_xpm_file_to_image(g_game.mlx, "textures/enemies/aim_m_01.xpm", &g_tex.en_anim[0][0].width, &g_tex.en_anim[0][0].height);
 	g_tex.en_anim[0][0].data = (int *)mlx_get_data_addr(g_tex.en_anim[0][0].ptr, &g_tex.en_anim[0][0].bpp, &g_tex.en_anim[0][0].size_line, &g_tex.en_anim[0][0].endian);
@@ -115,6 +115,10 @@ void		ft_init_enemies(void)
 	g_tex.en_anim[0][15].ptr = mlx_xpm_file_to_image(g_game.mlx, "textures/enemies/aim_m_03_01.xpm", &g_tex.en_anim[0][15].width, &g_tex.en_anim[0][15].height);
 	g_tex.en_anim[0][15].data = (int *)mlx_get_data_addr(g_tex.en_anim[0][15].ptr, &g_tex.en_anim[0][15].bpp, &g_tex.en_anim[0][15].size_line, &g_tex.en_anim[0][15].endian);
 	g_tex.en_anim[0][15].scale = 1;
+
+	g_tex.en_anim[0][16].ptr = mlx_xpm_file_to_image(g_game.mlx, "textures/items/shep.xpm", &g_tex.en_anim[0][16].width, &g_tex.en_anim[0][16].height);
+	g_tex.en_anim[0][16].data = (int *)mlx_get_data_addr(g_tex.en_anim[0][16].ptr, &g_tex.en_anim[0][16].bpp, &g_tex.en_anim[0][16].size_line, &g_tex.en_anim[0][16].endian);
+	g_tex.en_anim[0][16].scale = 1;
 
 	g_math.enemy = malloc(sizeof(char**) * 10);
 	g_math.enemy[0] = malloc(sizeof(char*) * 31);

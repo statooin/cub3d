@@ -12,7 +12,7 @@
 
 #include "cub3d.h"
 
-void		ft_cut_scene()
+void		ft_cut_scene_1()
 {
 	static int	imsec;
 	static int	img_x;
@@ -23,13 +23,25 @@ void		ft_cut_scene()
 	{
 		g_plr.iplay_cut_scene = 0;
 		imsec = 0;
+		g_enemies[0].ienemy_width = 2; // / (8 / 3.2);
+		g_enemies[0].fenemy_tall = 1.2f; //  * (8 / 3.2)
+		g_enemies[0].ienemy_top = 0.2f;
+		g_enemies[0].en_anim_i = 0;
+		g_math.map[23][8] = ' ';
+		g_math.map[23][7] = ' ';
+		g_enemies[0].ihealth = 0;
 	}
 	else
 	{
 		imsec = (clock() - clstart) * 1000 / CLOCKS_PER_SEC;
-		g_plr.fplr_a = -1.5 + (1.5f * imsec / 30000);
-		g_plr.iplr_z = 300 - (imsec * 300 / 30000);
-		g_math.isky_x = g_plr.fplr_a  * 650;
+		if (imsec < 28800)
+		{
+			g_plr.fplr_a = -1.3 + (1.3f * (float)imsec / 30000);
+			g_math.isky_x = g_plr.fplr_a  * 650;
+			g_plr.iplr_z = 300 - ((float)imsec * 300 / 30000);
+		}
+		if (imsec > 20000 && imsec < 28800)
+			g_plr.fplr_y = g_plr.fplr_y - 0.039f * ((float)(imsec - 20000) / 10000);
 		if (imsec < 28500)
 			iblack = 10;
 		else
@@ -200,24 +212,26 @@ int	ft_draw_world(void)
 
 	ft_draw_floor();
 	//ft_draw_simple_color_floor();
-	if (g_math.ienemies_active == 1 && g_plr.iplay_cut_scene == 0)
+	if (g_math.ienemies_active == 1)// && g_plr.iplay_cut_scene == 0)
 	{
-		ft_enemy_move();
+		//ft_enemy_move();
 		ft_reset_enemies();
 		ft_left_enemies_prescan();
-		//ft_enemy_act();
 	}
 
 	ft_draw_walls();
 	//ft_draw_simple_color_sky();
 	ft_draw_skybox();
 	if (g_math.ienemies_active == 1 && g_plr.iplay_cut_scene == 0)
+	{
 		ft_enemy_aim();
+		ft_enemy_move();
+	}
 	//ft_draw_hp(1);
 
 	if (g_plr.iplay_cut_scene != 0)
 	{
-		ft_cut_scene();
+		ft_cut_scene_1();
 	}
 	else
 	{
@@ -237,6 +251,9 @@ int	ft_draw_world(void)
 		if ((g_plr.uikeys_prsd & PRSD_H) != 0)
 		{
 			ft_shields();
+
+			ft_put_scaled_img_lt_to_win(&g_game.win_buf, &g_game, \
+				&g_tex.tex_gun, g_game.iscr_width - 380, g_game.iscr_height - 210 - g_plr.igun_h); //tex_gun
 
 			ft_put_scaled_opac_img_lt_to_win(&g_game.win_buf, &g_game, \
 				&g_tex.tex_gun_ui, 20, g_game.iscr_height - 110); //tex_gun_ui

@@ -18,7 +18,7 @@ void	ft_init_shields(void)
 	char	*ctex_name;
 
 	i = 0;
-	g_plr.iplr_armor = 28;
+	g_plr.iplr_shield = 27;
 	g_tex.tex_shield = malloc(sizeof(t_img_n_tex) * 28);
 	ctex_name = NULL;
 	while (i <= 27)

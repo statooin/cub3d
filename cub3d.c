@@ -320,7 +320,7 @@ void	ft_load_ui_digits(void)
 	char	*ctex_name;
 
 	i = 0;
-	g_plr.iplr_armor = 28;
+	g_plr.iplr_armor = 18;
 	g_tex.tex_digits = malloc(sizeof(t_img_n_tex) * 10);
 	ctex_name = NULL;
 	while (i <= 9)
@@ -371,6 +371,13 @@ void	ft_load_ui()
 	g_tex.tex_gun_ui.step = 1.0f / g_tex.tex_gun_ui.scale;
 	g_tex.tex_gun_ui.opacity = 0.7f;
 	g_tex.tex_gun_ui.opacity_1 = 1.0f - 0.7f;
+
+	g_tex.tex_gun.ptr = mlx_xpm_file_to_image(g_game.mlx, "textures/gun/m8.xpm", &g_tex.tex_gun.width, &g_tex.tex_gun.height);
+	g_tex.tex_gun.data = (int *)mlx_get_data_addr(g_tex.tex_gun.ptr, &g_tex.tex_gun.bpp, &g_tex.tex_gun.size_line, &g_tex.tex_gun.endian);
+	g_tex.tex_gun.scale = 0.7f;
+	g_tex.tex_gun.step = 1.0f / g_tex.tex_gun.scale;
+	g_tex.tex_gun.opacity = 0.7f;
+	g_tex.tex_gun.opacity_1 = 1.0f - 0.7f;
 
 	ft_load_ui_arrow();
 	ft_load_ui_digits();
@@ -438,6 +445,7 @@ int	main(void)
 	g_plr.iplr_z = 0;//player.g_plr.fplr_z0;
 	g_plr.iammo_full = 360;
 	g_plr.iammo = 45;
+	g_plr.igun_h = 21;
 
 	g_consts.ffov = 3.14159 / 3.2; // /8 !! need fix with / 3.0  // field of view 15.0-20.0 this id sniper zoom!! )))
 	g_consts.ffov_vert = g_consts.ffov;
@@ -459,10 +467,15 @@ int	main(void)
 	g_tex.tex_txt_01.data = (int *)mlx_get_data_addr(g_tex.tex_txt_01.ptr, &g_tex.tex_txt_01.bpp, &g_tex.tex_txt_01.size_line, &g_tex.tex_txt_01.endian);
 	g_tex.tex_txt_01.scale = 0.8;
 	g_tex.tex_txt_01.step = 1 / g_tex.tex_txt_01.scale;
-	ft_put_scaled_img_to_win(&g_game.win_buf, &g_game, &g_tex.tex_txt_01, g_game.iscr_width05 + 30, 200); //del this
+	ft_put_scaled_img_to_win(&g_game.win_buf, &g_game, &g_tex.tex_txt_01, g_game.iscr_width05 + 10, 200); //del this
 	mlx_put_image_to_window(g_game.mlx, g_game.mlx_win, g_game.win_buf.ptr, 0, 0);
 // delete txt here!!!
-
+	int	pid = fork();
+	if (pid == 0)
+	{
+		system("mpg123 -f 30000 -q sound/31_amada.mp3");
+		exit(0);
+	}
 
 	/*LETA_start HP
 	  g_tex.tex_hp = malloc(sizeof(t_img_n_tex) * 5);

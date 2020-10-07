@@ -23,8 +23,8 @@ void		ft_put_objects(int y, int x0)
 		{
 			if (g_math.map[y][x] == 'n')
 			{
-				g_plr.fplr_x = x;//8.0f; // player's position on X
-				g_plr.fplr_y = y;//23.0f; // player's position on Y
+				g_plr.fplr_x = x + 1.1f;//8.0f; // player's position on X
+				g_plr.fplr_y = y + 0.4f;//23.0f; // player's position on Y
 				g_plr.fplr_a = 0.0f; // player's VIEW angle (the dorection of rays to visible walls)
 				g_math.map[y][x] = ' ';
 			}

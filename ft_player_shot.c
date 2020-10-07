@@ -55,7 +55,7 @@ void	ft_player_shot(void)
 
 	if (g_math.ishot > 0)
 	{
-		ft_put_scaled_opac_img_to_win(&g_game.win_buf, &g_game, &g_tex.tex_muz_00, g_game.iscr_width05, g_game.iscr_height05);
+		ft_put_scaled_opac_img_to_win(&g_game.win_buf, &g_game, &g_tex.tex_muz_00, g_game.iscr_width - 330, g_game.iscr_height - 210 - g_plr.igun_h);
 		g_math.ishot--;
 	}
 	else

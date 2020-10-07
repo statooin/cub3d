@@ -17,7 +17,12 @@ void	ft_draw_crosshair(void)
 	static int	iaim;
 
 	if (g_math.ishot > 0 && iaim < 100)
+	{
 		iaim += 30;
+		g_plr.igun_h -= 20;
+	}
+	if (g_plr.igun_h < -60)
+		g_plr.igun_h += 20;
 	if ((g_plr.uikeys_prsd & PRSD_UP_W) != 0 \
 		|| (g_plr.uikeys_prsd & PRSD_DOWN_S) != 0 \
 		|| (g_plr.uikeys_prsd & PRSD_A) != 0 \
@@ -31,9 +36,15 @@ void	ft_draw_crosshair(void)
 			iaim -= 10;
 	}
 	else
+	{
 		iaim -= 20;
+	}
 	if (iaim < 20)
+	{
 		iaim = 20;
+		if (g_plr.igun_h < -20)
+			g_plr.igun_h += 5;
+	}
 	ft_put_scaled_opac_img_to_win(&g_game.win_buf, &g_game, \
 		&g_tex.tex_c_line, g_game.iscr_width05, g_game.iscr_height05 - iaim);
 	ft_put_scaled_opac_img_to_win(&g_game.win_buf, &g_game, \
