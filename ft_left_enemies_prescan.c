@@ -37,7 +37,7 @@ void	ft_left_enemies_prescan(void)
 			g_math.ftest_y = g_math.ftest_y - g_consts.fcosf_ang_step;
 			itest_x = (int)(g_math.ftest_x);
 			itest_y = (int)(g_math.ftest_y);
-			if (g_math.map[itest_y][itest_x] >= 'a' && g_math.map[itest_y][itest_x] <= 'v')
+			if (g_math.map[itest_y][itest_x] >= 'a' && g_math.map[itest_y][itest_x] < 's')
 			{
 				g_math.ienemy_n = g_math.map[itest_y][itest_x] - 'a';
 				ft_draw_enemy(&fdist_to_wall);

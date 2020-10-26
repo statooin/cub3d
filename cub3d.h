@@ -115,16 +115,21 @@ typedef struct			s_game
 
 typedef struct			s_snd
 {
-	char				*cstp_surf_mu;
-	char				*crun_surf_mu;
-	char				*cmus_mu;
-	char				*camp_surf_pid;
-	char				*cstp_surf_un;
-	char				*crun_surf_un;
-	char				*cmus_un;
+	char				*csilence_pid;
+	char				*csilence_mu;
+	char				*csilence_un;
 	char				*cstp_surf_pid;
+	char				*cstp_surf_mu;
+	char				*cstp_surf_un;
+	char				*camb_surf_pid;
+	char				*camb_surf_mu;
+	char				*camb_surf_un;
 	char				*crun_surf_pid;
+	char				*crun_surf_mu;
+	char				*crun_surf_un;
 	char				*cmus_pid;
+	char				*cmus_mu;
+	char				*cmus_un;
 	char				*ccmd;
 	int					isteps;
 	int					irun;

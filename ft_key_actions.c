@@ -3,14 +3,26 @@
 /*                                                        :::      ::::::::   */
 /*   ft_key_actions.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bjebedia <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: statooin <statooin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/07 20:04:33 by bjebedia          #+#    #+#             */
-/*   Updated: 2020/09/10 18:42:44 by bjebedia         ###   ########.fr       */
+/*   Updated: 2020/10/26 04:23:16 by statooin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
+
+void	ft_put_enemies_2()
+{
+	g_math.map[(int)g_plr.fplr_y][(int)g_plr.fplr_x] = ' ';
+	//g_math.map[18][56] = 'a';
+	//g_enemies[0].ihealth = 100;
+	//g_math.map[20][55] = 'b';
+	g_enemies[1].ihealth = 100;
+	//g_math.map[21][54] = 'c';
+	g_enemies[2].ihealth = 100;
+	g_math.ienemies_active = 1;
+}
 
 void	ft_key_move(void)
 {
@@ -20,8 +32,13 @@ void	ft_key_move(void)
 		g_plr.fplr_x += sinf(g_plr.fplr_a - 1.7f) * g_plr.fplr_v / 1.5f;
 		if (g_math.map[(int)g_plr.fplr_y][(int)g_plr.fplr_x] != '0' && g_math.map[(int)g_plr.fplr_y][(int)g_plr.fplr_x] != ' ')
 		{
-			g_plr.fplr_y -= cosf(g_plr.fplr_a - 1.7f) * g_plr.fplr_v * 2;
-			g_plr.fplr_x -= sinf(g_plr.fplr_a - 1.7f) * g_plr.fplr_v * 2;
+			if (g_math.map[(int)g_plr.fplr_y][(int)g_plr.fplr_x] < 's')
+			{
+				g_plr.fplr_y -= cosf(g_plr.fplr_a - 1.7f) * g_plr.fplr_v * 2;
+				g_plr.fplr_x -= sinf(g_plr.fplr_a - 1.7f) * g_plr.fplr_v * 2;
+			}
+			else
+				ft_put_enemies_2();
 		}
 	}
 	else if ((g_plr.uikeys_prsd & PRSD_D) != 0)
@@ -30,8 +47,13 @@ void	ft_key_move(void)
 		g_plr.fplr_x -= sinf(g_plr.fplr_a - 1.7f) * g_plr.fplr_v / 1.5f;
 		if (g_math.map[(int)g_plr.fplr_y][(int)g_plr.fplr_x] != '0' && g_math.map[(int)g_plr.fplr_y][(int)g_plr.fplr_x] != ' ')
 		{
-			g_plr.fplr_y += cosf(g_plr.fplr_a - 1.7f) * g_plr.fplr_v * 2;
-			g_plr.fplr_x += sinf(g_plr.fplr_a - 1.7f) * g_plr.fplr_v * 2;
+			if (g_math.map[(int)g_plr.fplr_y][(int)g_plr.fplr_x] < 's')
+			{
+				g_plr.fplr_y += cosf(g_plr.fplr_a - 1.7f) * g_plr.fplr_v * 2;
+				g_plr.fplr_x += sinf(g_plr.fplr_a - 1.7f) * g_plr.fplr_v * 2;
+			}
+			else
+				ft_put_enemies_2();
 		}
 	}
 
@@ -41,8 +63,13 @@ void	ft_key_move(void)
 		g_plr.fplr_x -= sinf(g_plr.fplr_a) * g_plr.fplr_v;
 		if (g_math.map[(int)g_plr.fplr_y][(int)g_plr.fplr_x] != '0' && g_math.map[(int)g_plr.fplr_y][(int)g_plr.fplr_x] != ' ')
 		{
-			g_plr.fplr_y += cosf(g_plr.fplr_a) * g_plr.fplr_v * 2;
-			g_plr.fplr_x += sinf(g_plr.fplr_a) * g_plr.fplr_v * 2;
+			if (g_math.map[(int)g_plr.fplr_y][(int)g_plr.fplr_x] < 's')
+			{
+				g_plr.fplr_y += cosf(g_plr.fplr_a) * g_plr.fplr_v * 2;
+				g_plr.fplr_x += sinf(g_plr.fplr_a) * g_plr.fplr_v * 2;
+			}
+			else
+				ft_put_enemies_2();
 		}
 	}
 	else if ((g_plr.uikeys_prsd & PRSD_DOWN_S) != 0)
@@ -51,8 +78,13 @@ void	ft_key_move(void)
 		g_plr.fplr_x += sinf(g_plr.fplr_a) * g_plr.fplr_v;
 		if (g_math.map[(int)g_plr.fplr_y][(int)g_plr.fplr_x] != '0' && g_math.map[(int)g_plr.fplr_y][(int)g_plr.fplr_x] != ' ')
 		{
-			g_plr.fplr_y -= cosf(g_plr.fplr_a) * g_plr.fplr_v * 2;
-			g_plr.fplr_x -= sinf(g_plr.fplr_a) * g_plr.fplr_v * 2;
+			if (g_math.map[(int)g_plr.fplr_y][(int)g_plr.fplr_x] < 's')
+			{
+				g_plr.fplr_y -= cosf(g_plr.fplr_a) * g_plr.fplr_v * 2;
+				g_plr.fplr_x -= sinf(g_plr.fplr_a) * g_plr.fplr_v * 2;
+			}
+			else
+				ft_put_enemies_2();
 		}
 	}
 
@@ -105,6 +137,9 @@ void	ft_key_actions(void)
 		g_snd.isteps = 0;
 		system(g_snd.crun_surf_mu);
 		system(g_snd.cstp_surf_mu);
+		//ft_putstr(g_snd.csilence_un);
+		system(g_snd.csilence_mu);
+		system(g_snd.csilence_un);
 		//printf ("%s\n", g_snd.cstp_surf_mu);
 	}
 

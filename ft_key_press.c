@@ -51,6 +51,7 @@ int	ft_key_press(int ikey)
 		else
 			g_plr.uikeys_prsd |= PRSD_M;
 	}
+/**/
 	if (ikey == KEY_ESC)
 	{
 		if (g_plr.iplay_cut_scene != 0)
@@ -58,5 +59,6 @@ int	ft_key_press(int ikey)
 		else
 			ft_close();
 	}
+/**/
 	return (1);
 }

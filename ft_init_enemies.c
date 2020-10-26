@@ -36,7 +36,7 @@ void		ft_init_enemies(void)
 	g_enemies[1].ifirst_rayx = -401;
 	g_enemies[1].cl_move = 0.2f;
 	g_enemies[1].cl_shoot = 0.15f;
-	g_enemies[1].ihealth = 100;
+	g_enemies[1].ihealth = 0;
 
 	g_enemies[2].ienemy_width = 2; // / (8 / 3.2);
 	g_enemies[2].ienemy_top = 0.2f;
@@ -46,7 +46,7 @@ void		ft_init_enemies(void)
 	g_enemies[2].ifirst_rayx = -401;
 	g_enemies[2].cl_move = 0.15f;
 	g_enemies[2].cl_shoot = 0.1f;
-	g_enemies[2].ihealth = 100;
+	g_enemies[2].ihealth = 0;
 	//write(1, "1", 1);
 
 	g_tex.en_anim = malloc(sizeof(t_img_n_tex*) * 2);

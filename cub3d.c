@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bjebedia <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: statooin <statooin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/07 20:26:18 by bjebedia          #+#    #+#             */
-/*   Updated: 2020/09/10 18:42:44 by bjebedia         ###   ########.fr       */
+/*   Updated: 2020/10/26 06:07:31 by statooin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,26 +23,26 @@ void	ft_mute_unmute_pid(char **cpid, char **cmute, char **cunmute)
 
 	ctmp = ft_strdup(""); ///re do ft_strjoin_f for NULL input - not ft_strdup
 	ft_strjoin_f("bash mute_pid_echo.sh ", *cpid, &ctmp);
-	printf ("%s\n", ctmp);
+	ft_putstr(ctmp);
 
         fp = popen(ctmp,"r");
         fgets(pidline,1024,fp);
-	printf("----------------------\n\n");
-	printf ("%s\n", pidline);
+	ft_putstr("\n");
+	ft_putstr(pidline);
 	*cmute = ft_strdup(pidline);
-	printf("----------------------\n\n");
+	ft_putstr("\n\n");
 	pclose(fp);
 
 	ctmp = ft_strdup(""); ///re do ft_strjoin_f for NULL input - not ft_strdup
 	ft_strjoin_f("bash unmute_pid_echo.sh ", *cpid, &ctmp);
-	printf ("%s\n", ctmp);
+	ft_putstr(ctmp);
 
         fp = popen(ctmp,"r");
         fgets(pidline,1024,fp);
-	printf("----------------------\n\n");
-	printf ("%s\n", pidline);
+	ft_putstr("\n\n");
+	ft_putstr(pidline);
 	*cunmute = ft_strdup(pidline);
-	printf("----------------------\n\n");
+	ft_putstr("----------------------\n\n");
 	pclose(fp);
 }
 
@@ -161,7 +161,7 @@ void	ft_load_snd_steps()
 ft_pause(1100);
 
 	ft_pidof_last_mpg123(&g_snd.cstp_surf_pid);
-	printf ("pid: %s\n", g_snd.cstp_surf_pid);
+	printf("pid: %s\n", g_snd.cstp_surf_pid);
 	system("pacmd list-sink-inputs | grep index");
 	ft_mute_unmute_pid(&g_snd.cstp_surf_pid, &g_snd.cstp_surf_mu, &g_snd.cstp_surf_un);
 	system(g_snd.cstp_surf_mu);
@@ -184,7 +184,7 @@ void	ft_load_snd_run()
 ft_pause(1100);
 
 	ft_pidof_last_mpg123(&g_snd.crun_surf_pid);
-	printf ("pid: %s\n", g_snd.crun_surf_pid);
+	printf("pid: %s\n", g_snd.crun_surf_pid);
 	system("pacmd list-sink-inputs | grep index");
 	ft_mute_unmute_pid(&g_snd.crun_surf_pid, &g_snd.crun_surf_mu, &g_snd.crun_surf_un);
 	system(g_snd.crun_surf_mu);
@@ -207,7 +207,7 @@ void	ft_load_snd_music()
 ft_pause(2100);
 
 	ft_pidof_last_mpg123(&g_snd.cmus_pid);
-	printf ("pid: %s\n", g_snd.cmus_pid);
+	printf("pid: %s\n", g_snd.cmus_pid);
 	system("pacmd list-sink-inputs | grep index");
 	ft_mute_unmute_pid(&g_snd.cmus_pid, &g_snd.cmus_mu, &g_snd.cmus_un);
 	system(g_snd.cmus_un);
@@ -227,10 +227,44 @@ void	ft_load_snd_surf_ambient()
 	}
 
 ft_pause(1100);
+	ft_putstr("!----------------------\n\n");
+	ft_pidof_last_mpg123(&g_snd.camb_surf_pid);
+	ft_putstr("pid: ");
+	ft_putstr(g_snd.camb_surf_pid);
+	ft_putstr("\n");
+	system("pacmd list-sink-inputs | grep index");
+	ft_mute_unmute_pid(&g_snd.camb_surf_pid, &g_snd.camb_surf_mu, &g_snd.camb_surf_un);
+	system(g_snd.camb_surf_un);
+	ft_putstr(g_snd.camb_surf_un);
+	ft_putstr("\nunmute amb_surf\n");
 
-	ft_pidof_last_mpg123(&g_snd.camp_surf_pid);
-	printf ("pid: %s\n", g_snd.camp_surf_pid);
-	printf("----------------------\n\n");
+	ft_putstr("!----------------------\n\n");
+}
+
+void	ft_load_snd_silence()
+{
+	int	pid;
+
+	pid = fork();
+	if (pid == 0)
+	{
+		system("mpg123 -q -f 22000 --loop -1 sound/silence.mp3");
+		exit(0);
+	}
+
+ft_pause(1100);
+	ft_putstr("!----------------------\n\n");
+	ft_pidof_last_mpg123(&g_snd.csilence_pid);
+	ft_putstr("pid: ");
+	ft_putstr(g_snd.csilence_pid);
+	ft_putstr("\n");
+	system("pacmd list-sink-inputs | grep index");
+	ft_mute_unmute_pid(&g_snd.csilence_pid, &g_snd.csilence_mu, &g_snd.csilence_un);
+	system(g_snd.csilence_un);
+	ft_putstr(g_snd.csilence_un);
+	ft_putstr("\nunmute amb_surf\n");
+
+	ft_putstr("!----------------------\n\n");
 }
 
 void	ft_load_floor()
@@ -348,14 +382,14 @@ void	ft_load_ui()
 	g_tex.tex_c_line.data = (int *)mlx_get_data_addr(g_tex.tex_c_line.ptr, &g_tex.tex_c_line.bpp, &g_tex.tex_c_line.size_line, &g_tex.tex_c_line.endian);
 	g_tex.tex_c_line.scale = 0.35f; //!re do this! whithout scale!!
 	g_tex.tex_c_line.step = 1.0f / g_tex.tex_c_line.scale;
-	g_tex.tex_c_line.opacity = 0.7f;
+	g_tex.tex_c_line.opacity = 0.6f;
 	g_tex.tex_c_line.opacity_1 = 1.0f - 0.7f;
 
 	g_tex.tex_c_line_h.ptr = mlx_xpm_file_to_image(g_game.mlx, "textures/crossline_h.xpm", &g_tex.tex_c_line_h.width, &g_tex.tex_c_line_h.height);
 	g_tex.tex_c_line_h.data = (int *)mlx_get_data_addr(g_tex.tex_c_line_h.ptr, &g_tex.tex_c_line_h.bpp, &g_tex.tex_c_line_h.size_line, &g_tex.tex_c_line_h.endian);
 	g_tex.tex_c_line_h.scale = 0.35f;
 	g_tex.tex_c_line_h.step = 1.0f / g_tex.tex_c_line_h.scale;
-	g_tex.tex_c_line_h.opacity = 0.7f;
+	g_tex.tex_c_line_h.opacity = 0.6f;
 	g_tex.tex_c_line_h.opacity_1 = 1.0f - 0.7f;
 
 	g_tex.tex_map_ui.ptr = mlx_xpm_file_to_image(g_game.mlx, "textures/ui/map_ui.xpm", &g_tex.tex_map_ui.width, &g_tex.tex_map_ui.height);
@@ -423,6 +457,7 @@ int	main(void)
 	g_game.win_buf.data = g_game.win_buf0.data;
 	g_game.win_buf.bpp_8 = g_game.win_buf.bpp / 8;
 
+	ft_load_snd_silence();
 
 	//ui loading
 	g_tex.tex_ui_01.ptr = mlx_xpm_file_to_image(g_game.mlx, "textures/ui/loading.xpm", &g_tex.tex_ui_01.width, &g_tex.tex_ui_01.height);
@@ -463,19 +498,7 @@ int	main(void)
 	ft_put_objects(26, ft_strlen(g_math.map[0]) - 1);
 
 
-	g_tex.tex_txt_01.ptr = mlx_xpm_file_to_image(g_game.mlx, "textures/text/txt_start.xpm", &g_tex.tex_txt_01.width, &g_tex.tex_txt_01.height);
-	g_tex.tex_txt_01.data = (int *)mlx_get_data_addr(g_tex.tex_txt_01.ptr, &g_tex.tex_txt_01.bpp, &g_tex.tex_txt_01.size_line, &g_tex.tex_txt_01.endian);
-	g_tex.tex_txt_01.scale = 0.8;
-	g_tex.tex_txt_01.step = 1 / g_tex.tex_txt_01.scale;
-	ft_put_scaled_img_to_win(&g_game.win_buf, &g_game, &g_tex.tex_txt_01, g_game.iscr_width05 + 10, 200); //del this
-	mlx_put_image_to_window(g_game.mlx, g_game.mlx_win, g_game.win_buf.ptr, 0, 0);
-// delete txt here!!!
-	int	pid = fork();
-	if (pid == 0)
-	{
-		system("mpg123 -f 30000 -q sound/31_amada.mp3");
-		exit(0);
-	}
+
 
 	/*LETA_start HP
 	  g_tex.tex_hp = malloc(sizeof(t_img_n_tex) * 5);
@@ -495,8 +518,35 @@ int	main(void)
 
 
 	ft_init_shields();
+
+	g_tex.tex_ui_02.ptr = mlx_xpm_file_to_image(g_game.mlx, "textures/ui/loading_bar.xpm", &g_tex.tex_ui_02.width, &g_tex.tex_ui_02.height);
+	g_tex.tex_ui_02.data = (int *)mlx_get_data_addr(g_tex.tex_ui_02.ptr, &g_tex.tex_ui_02.bpp, &g_tex.tex_ui_02.size_line, &g_tex.tex_ui_02.endian);
+	g_tex.tex_ui_02.scale = 0.21;
+	g_tex.tex_ui_02.step = 1 / g_tex.tex_ui_02.scale;
+
+	i_load_x = 93;
+	ft_put_scaled_img_lt_to_win(&g_game.win_buf, &g_game, &g_tex.tex_ui_02, i_load_x, g_game.iscr_height - 27); //del this
+	mlx_put_image_to_window(g_game.mlx, g_game.mlx_win, g_game.win_buf.ptr, 0, 0);
+
 	ft_init_armor();
+
+	g_tex.tex_txt_01.ptr = mlx_xpm_file_to_image(g_game.mlx, "textures/text/txt_start.xpm", &g_tex.tex_txt_01.width, &g_tex.tex_txt_01.height);
+	g_tex.tex_txt_01.data = (int *)mlx_get_data_addr(g_tex.tex_txt_01.ptr, &g_tex.tex_txt_01.bpp, &g_tex.tex_txt_01.size_line, &g_tex.tex_txt_01.endian);
+	g_tex.tex_txt_01.scale = 0.8;
+	g_tex.tex_txt_01.step = 1 / g_tex.tex_txt_01.scale;
+	ft_put_scaled_img_to_win(&g_game.win_buf, &g_game, &g_tex.tex_txt_01, g_game.iscr_width05 + 10, 200); //del this
+	mlx_put_image_to_window(g_game.mlx, g_game.mlx_win, g_game.win_buf.ptr, 0, 0);
+// delete txt here!!!
+	int	pid = fork();
+	if (pid == 0)
+	{
+		system("mpg123 -f 30000 -q sound/47_amada.mp3");
+		exit(0);
+	}
+
 	ft_init_walls();
+
+
 
 	if (g_game.iscr_width == 1920)
 		g_tex.tex_vign.ptr = mlx_xpm_file_to_image(g_game.mlx, "textures/vignette19201080.xpm", &g_tex.tex_vign.width, &g_tex.tex_vign.height);
@@ -512,6 +562,10 @@ int	main(void)
 
 	ft_load_ui();
 
+	i_load_x += 9;
+	ft_put_scaled_img_lt_to_win(&g_game.win_buf, &g_game, &g_tex.tex_ui_02, i_load_x, g_game.iscr_height - 27); //del this
+	mlx_put_image_to_window(g_game.mlx, g_game.mlx_win, g_game.win_buf.ptr, 0, 0);
+
 	g_tex.tex_muz_00.ptr = mlx_xpm_file_to_image(g_game.mlx, "textures/gun/muzzle_flash_00.xpm", &g_tex.tex_muz_00.width, &g_tex.tex_muz_00.height);
 	g_tex.tex_muz_00.data = (int *)mlx_get_data_addr(g_tex.tex_muz_00.ptr, &g_tex.tex_muz_00.bpp, &g_tex.tex_muz_00.size_line, &g_tex.tex_muz_00.endian);
 	g_tex.tex_muz_00.scale = 1;
@@ -519,14 +573,7 @@ int	main(void)
 	g_tex.tex_muz_00.opacity = 0.7;
 	g_tex.tex_muz_00.opacity_1 = 1 - 0.7;
 
-	g_tex.tex_ui_02.ptr = mlx_xpm_file_to_image(g_game.mlx, "textures/ui/loading_bar.xpm", &g_tex.tex_ui_02.width, &g_tex.tex_ui_02.height);
-	g_tex.tex_ui_02.data = (int *)mlx_get_data_addr(g_tex.tex_ui_02.ptr, &g_tex.tex_ui_02.bpp, &g_tex.tex_ui_02.size_line, &g_tex.tex_ui_02.endian);
-	g_tex.tex_ui_02.scale = 0.21;
-	g_tex.tex_ui_02.step = 1 / g_tex.tex_ui_02.scale;
 
-	i_load_x = 93;
-	ft_put_scaled_img_lt_to_win(&g_game.win_buf, &g_game, &g_tex.tex_ui_02, i_load_x, g_game.iscr_height - 27); //del this
-	mlx_put_image_to_window(g_game.mlx, g_game.mlx_win, g_game.win_buf.ptr, 0, 0);
 
 	g_math.ibottom_sky = malloc(sizeof(int) * g_game.iscr_width);
 	g_tex.tex_sky.ptr = mlx_xpm_file_to_image(g_game.mlx, "textures/sky1.xpm", &g_tex.tex_sky.width, &g_tex.tex_sky.height);
@@ -575,11 +622,12 @@ int	main(void)
 	g_game.root_window = XRootWindow(g_game.dpy, 0);
 	XSelectInput(g_game.dpy, g_game.root_window, KeyReleaseMask);
 
+	ft_pause(15000);
 
 ///////////////////////////////////////////////////
 	g_snd.ccmd = ft_strdup("");
 	ft_strjoin_f("kill -9 ", g_snd.cmus_pid, &g_snd.ccmd);
-	printf ("%s\n", g_snd.ccmd);
+	printf("%s\n", g_snd.ccmd);
 	system(g_snd.ccmd);
 	//kill((pid_t)ft_atoi(g_snd.cmus_surf), SIGINT); ///!!! !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 

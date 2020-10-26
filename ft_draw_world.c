@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_draw_world.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bjebedia <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: statooin <statooin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/07 19:44:51 by bjebedia          #+#    #+#             */
-/*   Updated: 2020/09/10 18:42:44 by bjebedia         ###   ########.fr       */
+/*   Updated: 2020/10/26 03:45:41 by statooin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void		ft_cut_scene_1()
 
 	if (imsec > 30000)
 	{
-		g_plr.iplay_cut_scene = 0;
+		g_plr.iplay_cut_scene = 0;//2; //!!!second cutsceene
 		imsec = 0;
 		g_enemies[0].ienemy_width = 2; // / (8 / 3.2);
 		g_enemies[0].fenemy_tall = 1.2f; //  * (8 / 3.2)
@@ -57,6 +57,25 @@ void		ft_cut_scene_1()
 				img_y++;
 			}
 		}
+	}
+
+
+}
+
+void		ft_cut_scene_2()
+{
+	static int	imsec;
+
+	if (imsec > 3000)
+	{
+		g_plr.iplay_cut_scene = 0;
+		imsec = 0;
+	}
+	else
+	{
+		imsec = (clock() - clstart) * 1000 / CLOCKS_PER_SEC;
+		ft_put_scaled_opac_img_to_win(&g_game.win_buf, &g_game, \
+			&g_tex.tex_muz_00, g_game.iscr_width05, g_game.iscr_height05); 
 	}
 
 
@@ -229,11 +248,7 @@ int	ft_draw_world(void)
 	}
 	//ft_draw_hp(1);
 
-	if (g_plr.iplay_cut_scene != 0)
-	{
-		ft_cut_scene_1();
-	}
-	else
+	if (g_plr.iplay_cut_scene == 0)
 	{
 		ft_key_actions();
 		if ((g_plr.uikeys_prsd & PRSD_M) != 0)
@@ -274,6 +289,10 @@ int	ft_draw_world(void)
 		}
 
 	}
+	else if (g_plr.iplay_cut_scene == 1)
+		ft_cut_scene_1();
+	//else if (g_plr.iplay_cut_scene == 2)
+	//	ft_cut_scene_2();  //!!! here manual need show
 	ft_draw_vignette();//&g_game.win_buf, &g_game);
 
 	if (buf_num == 0)

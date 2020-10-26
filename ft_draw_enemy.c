@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_draw_enemy.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bjebedia <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: statooin <statooin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/07 19:02:37 by bjebedia          #+#    #+#             */
-/*   Updated: 2020/09/07 19:03:55 by bjebedia         ###   ########.fr       */
+/*   Updated: 2020/10/26 07:36:42 by statooin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,8 @@ void	ft_draw_enemy(float *fdist_to_wall)
 							//g_math.ibottom_sky[g_math.iray_x] = y;
 							if (g_math.ishot > 0 && y == g_game.iscr_height05 && g_math.iray_x == g_game.iscr_width05) ///!!!
 								g_enemies[g_math.ienemy_n].ihealth -= 20; ///headshot
+							if (y < g_math.ibottom_sky[g_math.iray_x])
+								g_math.ibottom_sky[g_math.iray_x] = y;
 						}
 					}
 					fcount_h -= g_enemies[g_math.ienemy_n].fenemy_texh_step;

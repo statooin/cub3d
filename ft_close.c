@@ -20,8 +20,10 @@ int		ft_close(void)
 		mlx_destroy_image(g_game.mlx, g_game.win_buf1.ptr);
 	if (g_game.mlx && g_game.mlx_win)
 		mlx_destroy_window(g_game.mlx, g_game.mlx_win);
-	ft_strjoin_f("bash unmute_pid.sh ", g_snd.cstp_surf_pid, &g_snd.cstp_surf_pid);
-	system(g_snd.cstp_surf_pid);
+	//ft_strjoin_f("bash unmute_pid.sh ", g_snd.cstp_surf_pid, &g_snd.cstp_surf_pid);
+	//system(g_snd.cstp_surf_pid);
+	system(g_snd.csilence_mu);
+	system(g_snd.csilence_un);
 	system("killall mpg123");
 	//kill(0, SIGTERM);
 	//kill(1, SIGTERM);

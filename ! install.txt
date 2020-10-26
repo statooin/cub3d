@@ -1,5 +1,11 @@
-sudo apt install libx11-dev
-sudo apt-get install libxext-dev
+sudo apt install libx11-dev -y
+sudo apt-get install libxext-dev -y
+sudo apt install mpg123 -y
+sudo apt install pidof -y
+sudo apt install pacmd -y
+git clone https://github.com/statooin/cub3d.git
+cd cub3d
+bash compile_all.sh
 
 for mac:
 mpg123
